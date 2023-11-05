@@ -1,0 +1,5 @@
+{
+  "verbose": true,
+  "ignore": ["*.test.js", "fixtures/*"],
+  "ext": "js,html,css,jpg,png,svg,jpeg,ico,json"
+}
