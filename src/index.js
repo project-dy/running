@@ -22,7 +22,7 @@ const publicPath = path.resolve(__dirname, '../public').toString();
 function getRoutePath(publicPath) {
   fs.readdirSync(publicPath).forEach(file => {
     try {
-      fs.readdirSync(path.resolve(publicPath, file));
+      fs.readdirSync(path.resolve(publicPath, file)); // 폴더가 아닌 경우 오류 발생시켜 catch 구문 실행
       getRoutePath(path.resolve(publicPath, file));
     } catch {
       const routePath = path.resolve(publicPath, file).toString().split('public')[1];
