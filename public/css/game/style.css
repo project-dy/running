@@ -1,0 +1,45 @@
+div {
+  background-color: rgb(119, 0, 255);
+  color: #fff;
+  font-size: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+input {
+  margin: 10;
+  width: 50%;
+  height: 50px;
+  padding: 0 13px 0 13px;
+  font-size: 16px;
+  line-height: 44px;
+  box-sizing: border-box;
+  border: none;
+  position: relative;
+}
+
+form {
+  text-align: center;
+}
+form > div {
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  width: 50%;
+  box-sizing: border-box;
+  border: none;
+  position: relative;
+  background-color: #fff;
+  color: #fff
+}
+
+svg {
+  vertical-align: middle;
+  top: 15px;
+  background-color: #fff;
+}
+
+svg > path {
+  fill: rgba(0, 0, 0, 0.8);
+}
