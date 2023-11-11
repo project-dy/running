@@ -21,6 +21,7 @@ input {
 form {
   text-align: center;
 }
+
 form > div {
   margin-left: auto;
   margin-right: auto;
@@ -32,6 +33,16 @@ form > div {
   position: relative;
   background-color: #fff;
   color: #fff
+}
+
+form > div > a {
+  color: #444444;
+  font-size: small;
+}
+
+form > div > div {
+  background-color: #fff;
+  color: #444444;
 }
 
 svg {
