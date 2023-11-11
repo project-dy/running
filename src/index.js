@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
@@ -36,6 +37,30 @@ function getRoutePath(publicPath) {
 }
 
 getRoutePath(publicPath);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/game/', (req, res) => {
+  let sended = 0;
+  console.log(path.resolve(publicPath, '../data/account.json'));
+  fs.readFile(path.resolve(publicPath, '../data/account.json'), (err, data) => {
+    if (err) throw err;
+    const account = JSON.parse(data);
+    console.log(account.users);
+    account.users.forEach((user) => {
+      if ((user.id === req.body.id || user.sn === req.body.sn) && sended === 0) {
+        res.send(`200 OK`);
+        sended = 1;
+      }
+    });
+    if (sended === 0) {
+      account.users.push(req.body);
+      fs.writeFileSync(path.resolve(publicPath, '../data/account.json'), JSON.stringify(account));
+      res.send(`200 OK`);
+    }
+  });
+  // TODO: 게입창 전송. 데이터삽입필요.
+});
 
 app.listen(port,()=>{
   console.log(`Express app listening at http://localhost:${port}.`);
