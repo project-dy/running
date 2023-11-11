@@ -49,17 +49,40 @@ app.post('/game/', (req, res) => {
     console.log(account.users);
     account.users.forEach((user) => {
       if ((user.id === req.body.id || user.sn === req.body.sn) && sended === 0) {
-        res.send(`200 OK`);
+        sendIt(`200 OK`, req.body);
         sended = 1;
       }
     });
     if (sended === 0) {
       account.users.push(req.body);
       fs.writeFileSync(path.resolve(publicPath, '../data/account.json'), JSON.stringify(account));
-      res.send(`200 OK`);
+      sendIt(`200 OK`, req.body);
+      sended = 1;
+    }
+
+    function sendIt(status, user) {
+      console.log(user);
+      fs.readFile(path.resolve(publicPath, '../public/game/index.html'), (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        let dataString = data.toString();
+        dataString = dataString.replace(`  <script src="js/verify.js"></script>`, `  <script src="js/verify.js"></script>
+        <script type="text/javascript">
+          const name = '${user.name}';
+          const sn = '${user.sn}';
+          window.name = name;
+          window.sn = sn;
+          fetch('main/index.js')
+            .then(response => response.text())
+            .then(script => eval(script))
+            .catch(error => console.log(error));
+        </script>`);
+        // console.log(dataString);
+        res.write(dataString);
+        res.end();
+      });
     }
   });
-  // TODO: 게입창 전송. 데이터삽입필요.
 });
 
 app.listen(port,()=>{
