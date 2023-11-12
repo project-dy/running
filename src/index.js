@@ -184,6 +184,7 @@ function getRoutePath(publicPath) {
 }
 
 function checkRequiredFiles(dataPath) {
+  fs.existsSync(dataPath) || fs.mkdirSync(dataPath);
   const files = fs.readdirSync(dataPath);
   if (files.includes('account.json')) {
     console.log('Found required file: account.json');
@@ -199,7 +200,7 @@ function checkRequiredFiles(dataPath) {
     // return;
   } else {
     // 파일 생성
-    fs.writeFileSync(path.resolve(dataPath, 'game.json'), '{"games": []}');
+    fs.writeFileSync(path.resolve(dataPath, 'game.json'), '{"games": [{"gameId": "1", "description": "Room Number 1."}]}');
     console.log('Created required file: game.json');
   }
 }
