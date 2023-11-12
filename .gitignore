@@ -1,3 +1,7 @@
+# ignore account.json
+data/account.json
+data/*
+
 # Logs
 logs
 *.log
@@ -125,7 +129,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-# ignore account.json
-# data/account.json
-# data/*
