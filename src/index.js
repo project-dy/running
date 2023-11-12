@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const { send } = require('process');
 const app = express();
 const port = 3000;
 
@@ -17,12 +18,131 @@ const port = 3000;
 
 const path = require('path').posix;
 const publicPath = path.resolve(__dirname, '../public').toString();
-
+const dataPath = path.resolve(__dirname, '../data').toString();
 // app.get('/', (req, res) => res.sendFile(`${publicPath}/index.html`));
+
+checkRequiredFiles(dataPath);
+
+getRoutePath(publicPath);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/game/find', (req, res) => {
+  console.log(req.query);
+  if (req.query.gameId != undefined) {
+    console.log("exist");
+    const gameId = req.query.gameId;
+    fs.readFile(path.resolve(publicPath, '../data/game.json'), (err, data) => {
+      if (err) throw err;
+      const game = JSON.parse(data);
+      console.log(game);
+      game.games.forEach((game) => {
+        if (game.gameId === gameId) {
+          console.log("exist");
+          sendIt(`200 OK`, game);
+          return;
+        }
+      });
+      sendIt(`404 Not Found`, null);
+      function sendIt(status, game) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify({ status, game }));
+        res.end();
+      }
+    });
+  } else {
+    fs.readFile(path.resolve(publicPath, '../data/game.json'), (err, data) => {
+      if (err) throw err;
+      const game = JSON.parse(data);
+      console.log(game);
+      if (game.games.length === 0) {
+        sendIt(`404 Not Found`, null);
+        return;
+      } else {
+        sendIt(`205 Reset Content`, game.games);
+      }
+      function sendIt(status, game) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify({ status, game }));
+        res.end();
+      }
+    });
+  }
+});
+
+app.post('/game/', (req, res) => {
+  let sended = 0;
+  console.log(path.resolve(publicPath, '../data/account.json'));
+  fs.readFile(path.resolve(publicPath, '../data/account.json'), (err, data) => {
+    if (err) throw err;
+    const account = JSON.parse(data);
+    console.log(account.users);
+    account.users.forEach((user) => {
+      if ((user.name === req.body.name || user.sn === req.body.sn) && sended === 0) {
+        console.log("exist");
+        sendIt(`200 OK`, req.body);
+        sended = 1;
+      }
+    });
+    if (sended === 0) {
+      account.users.push(req.body);
+      fs.writeFileSync(path.resolve(publicPath, '../data/account.json'), JSON.stringify(account));
+      console.log("write");
+      sendIt(`200 OK`, req.body);
+      sended = 1;
+    }
+    
+    function sendIt(status, user) {
+      console.log(user);
+      /*fs.readFile(path.resolve(publicPath, '../public/game/index.html'), (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        let dataString = data.toString();
+        dataString = dataString.replace(`  <script src="js/verify.js"></script>`, `  <script src="js/verify.js"></script>
+        <script type="text/javascript">
+        const name = '${user.name}';
+        const sn = '${user.sn}';
+        window.name = name;
+        window.sn = sn;
+        fetch('main/js/index.js')
+        .then(response => response.text())
+        .then(script => eval(script))
+        .catch(error => console.log(error));
+        </script>`);
+        // console.log(dataString);
+        res.write(dataString);
+        res.end();
+      });*/
+      fs.readFile(path.resolve(publicPath, '../public/game/main/private.html'), (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        let dataString = data.toString();
+        dataString = dataString.replace(`  <script src="main/js/index.js"></script>`, `  <script src="main/js/index.js"></script>
+        <script type="text/javascript">
+        const name = '${user.name}';
+        const sn = '${user.sn}';
+        window.name = name;
+        window.sn = sn;
+        fetch('main/js/index.js')
+        .then(response => response.text())
+        .then(script => eval(script))
+        .catch(error => console.log(error));
+        </script>`);
+        // console.log(dataString);
+        res.write(dataString);
+        res.end();
+      });/**/
+    }
+  });
+});
+
+app.listen(port,()=>{
+  console.log(`Express app listening at http://localhost:${port}.`);
+});
 
 /**
  * 
- * @param {*} publicPath 라우터를 생성하기위해 탐색할 기본경로를 넣으십시오.
+ * @param {String} publicPath 라우터를 생성하기위해 탐색할 기본경로를 넣으십시오.
  * @returns Nothing.
  * @description publicPath의 하위 폴더를 탐색하여 폴더가 아닌 경우 라우터를 생성, 폴더인경우 재귀하여 라우터를 자동으로 등록합니다.
  * @example getRoutePath(path.resolve(__dirname, '../public').toString());
@@ -63,76 +183,23 @@ function getRoutePath(publicPath) {
   });
 }
 
-getRoutePath(publicPath);
+function checkRequiredFiles(dataPath) {
+  const files = fs.readdirSync(dataPath);
+  if (files.includes('account.json')) {
+    console.log('Found required file: account.json');
+    // return;
+  } else {
+    // 파일 생성
+    fs.writeFileSync(path.resolve(dataPath, 'account.json'), '{"users": [{"name": "default", "sn": "00000000"}]}');
+    console.log('Created required file: account.json');
+  }
 
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post('/game/', (req, res) => {
-  let sended = 0;
-  console.log(path.resolve(publicPath, '../data/account.json'));
-  fs.readFile(path.resolve(publicPath, '../data/account.json'), (err, data) => {
-    if (err) throw err;
-    const account = JSON.parse(data);
-    console.log(account.users);
-    account.users.forEach((user) => {
-      if ((user.name === req.body.name || user.sn === req.body.sn) && sended === 0) {
-        console.log("exist");
-        sendIt(`200 OK`, req.body);
-        sended = 1;
-      }
-    });
-    if (sended === 0) {
-      account.users.push(req.body);
-      fs.writeFileSync(path.resolve(publicPath, '../data/account.json'), JSON.stringify(account));
-      console.log("write");
-      sendIt(`200 OK`, req.body);
-      sended = 1;
-    }
-
-    function sendIt(status, user) {
-      console.log(user);
-      /*fs.readFile(path.resolve(publicPath, '../public/game/index.html'), (err, data) => {
-        if (err) throw err;
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        let dataString = data.toString();
-        dataString = dataString.replace(`  <script src="js/verify.js"></script>`, `  <script src="js/verify.js"></script>
-        <script type="text/javascript">
-          const name = '${user.name}';
-          const sn = '${user.sn}';
-          window.name = name;
-          window.sn = sn;
-          fetch('main/js/index.js')
-            .then(response => response.text())
-            .then(script => eval(script))
-            .catch(error => console.log(error));
-        </script>`);
-        // console.log(dataString);
-        res.write(dataString);
-        res.end();
-      });*/
-      fs.readFile(path.resolve(publicPath, '../public/game/main/private.html'), (err, data) => {
-        if (err) throw err;
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        let dataString = data.toString();
-        dataString = dataString.replace(`  <script src="js/verify.js"></script>`, `  <script src="js/verify.js"></script>
-        <script type="text/javascript">
-          const name = '${user.name}';
-          const sn = '${user.sn}';
-          window.name = name;
-          window.sn = sn;
-          fetch('main/js/index.js')
-            .then(response => response.text())
-            .then(script => eval(script))
-            .catch(error => console.log(error));
-        </script>`);
-        // console.log(dataString);
-        res.write(dataString);
-        res.end();
-      });/**/
-    }
-  });
-});
-
-app.listen(port,()=>{
-  console.log(`Express app listening at http://localhost:${port}.`);
-});
+  if (files.includes('game.json')) {
+    console.log('Found required file: game.json');
+    // return;
+  } else {
+    // 파일 생성
+    fs.writeFileSync(path.resolve(dataPath, 'game.json'), '{"games": []}');
+    console.log('Created required file: game.json');
+  }
+}

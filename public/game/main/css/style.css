@@ -1,0 +1,69 @@
+div {
+  background-color: rgb(119, 0, 255);
+  color: #fff;
+  font-size: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+input {
+  margin: 10;
+  width: 50%;
+  height: 50px;
+  padding: 0 13px 0 13px;
+  font-size: 16px;
+  line-height: 44px;
+  box-sizing: border-box;
+  border: none;
+  position: relative;
+}
+
+* {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.centerAlign {
+  text-align: center;
+}
+
+.leftAlign {
+  text-align: left;
+}
+
+#interectArea {
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  width: 50%;
+  box-sizing: border-box;
+  border: none;
+  position: relative;
+  background-color: #fff;
+  color: #fff
+}
+
+td {
+  padding-right: 100;
+}
+
+form > div > a {
+  color: #444444;
+  font-size: small;
+}
+
+form > div > div {
+  background-color: #fff;
+  color: #444444;
+}
+
+svg {
+  vertical-align: middle;
+  top: 15px;
+  background-color: #fff;
+}
+
+svg > path {
+  fill: rgba(0, 0, 0, 0.8);
+}

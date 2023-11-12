@@ -2,12 +2,18 @@
 <head>
   <title>달리기 경주!</title>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="css/style.css?after">
+  <link rel="stylesheet" href="main/css/style.css?after">
 </head>
 <body>
-  <div>
-    <h1 id="timer">달리기 경주!</h1>
+  <div id="root">
+    <div id="titleArea">
+      <h1 id="title">달리기 경주!</h1>
+      <a id="info">상태 가져오는 중</a><a id="loadingDot"></a>
+    </div>
+    <div id="interectArea">
+      <table id="gameTable"></table>
+    </div>
   </div>
-  <script src="js/index.js"></script>
+  <script src="main/js/index.js"></script>
 </body>
 </html>
