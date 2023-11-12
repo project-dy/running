@@ -48,7 +48,8 @@ app.post('/game/', (req, res) => {
     const account = JSON.parse(data);
     console.log(account.users);
     account.users.forEach((user) => {
-      if ((user.id === req.body.id || user.sn === req.body.sn) && sended === 0) {
+      if ((user.name === req.body.name || user.sn === req.body.sn) && sended === 0) {
+        console.log("exist");
         sendIt(`200 OK`, req.body);
         sended = 1;
       }
@@ -56,6 +57,7 @@ app.post('/game/', (req, res) => {
     if (sended === 0) {
       account.users.push(req.body);
       fs.writeFileSync(path.resolve(publicPath, '../data/account.json'), JSON.stringify(account));
+      console.log("write");
       sendIt(`200 OK`, req.body);
       sended = 1;
     }
