@@ -1,5 +1,6 @@
 
 const verify = () => {
+  document.getElementById('sn').value = document.getElementById('sn').value.substring(0, 4);
   const input = document.getElementById('sn').value;
   const arr = [...input];
   // console.log(`${arr[0]}학년 ${arr[1]}반 ${arr[2]}${arr[3]}번`);
