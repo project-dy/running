@@ -20,6 +20,30 @@ const publicPath = path.resolve(__dirname, '../public').toString();
 
 // app.get('/', (req, res) => res.sendFile(`${publicPath}/index.html`));
 
+/**
+ * 
+ * @param {*} publicPath 라우터를 생성하기위해 탐색할 기본경로를 넣으십시오.
+ * @returns Nothing.
+ * @description publicPath의 하위 폴더를 탐색하여 폴더가 아닌 경우 라우터를 생성, 폴더인경우 재귀하여 라우터를 자동으로 등록합니다.
+ * @example getRoutePath(path.resolve(__dirname, '../public').toString());
+ * @description 솅조ᇰᅌᅥᆼ졩훈민져ᇰᅙᅳᆷ
+나랏말ᄊᆞ미
+듀ᇰ귁에달아
+문ᄍᆞᆼ와로서르ᄉᆞᄆᆞᆺ디아니ᄒᆞᆯᄊᆡ
+이런젼ᄎᆞ로어린ᄇᆡᆨ셔ᇰ이니르고져호ᇙ배이셔도
+ᄆᆞᄎᆞᆷ내제ᄠᅳ들시러펴디몯ᄒᆞᇙ노미하니라
+내이ᄅᆞᆯ윙ᄒᆞ야어엿비너겨
+새로스믈여듧ᄍᆞᆼᄅᆞᆯᄆᆡᇰᄀᆞ노니
+사ᄅᆞᆷ마다ᄒᆡᅇᅧ수ᄫᅵ니겨날로ᄡᅮ메뼌ᅙᅡᆫ킈ᄒᆞ고져ᄒᆞᇙᄯᆞᄅᆞ미니라
+
+세종어제훈민정음
+나랏말이 중국과 문자와로 알맞지 아니하다
+이 때문에 어린 백성이 말하고자 하여도
+마참내 제 뜻을 혀지 못하니라
+내 이를 가엽게 여겨
+새로 스믈 여덟자를 만드노니
+사람마다 하여 쉽게 익혀 날로 씀에 편하게 하고자 할 뿐이니라
+ */
 function getRoutePath(publicPath) {
   fs.readdirSync(publicPath).forEach(file => {
     try {
