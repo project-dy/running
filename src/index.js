@@ -26,6 +26,9 @@ function getRoutePath(publicPath) {
       fs.readdirSync(path.resolve(publicPath, file)); // 폴더가 아닌 경우 오류 발생시켜 catch 구문 실행
       getRoutePath(path.resolve(publicPath, file));
     } catch {
+      if (file.includes('private')) {
+        return;
+      }
       const routePath = path.resolve(publicPath, file).toString().split('public')[1];
       console.log(`routePath: ${routePath}`);
       app.get(routePath, (req, res)=>{res.sendFile(`${path.resolve(publicPath, file).toString()}`)})
@@ -64,7 +67,7 @@ app.post('/game/', (req, res) => {
 
     function sendIt(status, user) {
       console.log(user);
-      fs.readFile(path.resolve(publicPath, '../public/game/index.html'), (err, data) => {
+      /*fs.readFile(path.resolve(publicPath, '../public/game/index.html'), (err, data) => {
         if (err) throw err;
         res.writeHead(200, { 'Content-Type': 'text/html' });
         let dataString = data.toString();
@@ -74,7 +77,7 @@ app.post('/game/', (req, res) => {
           const sn = '${user.sn}';
           window.name = name;
           window.sn = sn;
-          fetch('main/index.js')
+          fetch('main/js/index.js')
             .then(response => response.text())
             .then(script => eval(script))
             .catch(error => console.log(error));
@@ -82,7 +85,26 @@ app.post('/game/', (req, res) => {
         // console.log(dataString);
         res.write(dataString);
         res.end();
-      });
+      });*/
+      fs.readFile(path.resolve(publicPath, '../public/game/main/private.html'), (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        let dataString = data.toString();
+        dataString = dataString.replace(`  <script src="js/verify.js"></script>`, `  <script src="js/verify.js"></script>
+        <script type="text/javascript">
+          const name = '${user.name}';
+          const sn = '${user.sn}';
+          window.name = name;
+          window.sn = sn;
+          fetch('main/js/index.js')
+            .then(response => response.text())
+            .then(script => eval(script))
+            .catch(error => console.log(error));
+        </script>`);
+        // console.log(dataString);
+        res.write(dataString);
+        res.end();
+      });/**/
     }
   });
 });
