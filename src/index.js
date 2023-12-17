@@ -4,6 +4,10 @@ const bodyParser = require('body-parser'); // POST요청 처리위한 body-parse
 const app = express(); // express app 생성
 let port = 3000; // 포트 설정
 
+const morgan = require('morgan'); // morgan 모듈 로드
+
+app.use(morgan('dev')); // morgan 미들웨어 등록
+
 /*app.get('/', (req, res) => res.send(`
 <html>
 <head>
@@ -22,11 +26,19 @@ const dataPath = path.resolve(__dirname, '../data').toString(); // data 폴더�
 
 checkRequiredFiles(dataPath); // 필수파일 존재여부 확인 및 생성
 
-getRoutePath(publicPath); // publicPath의 하위 폴더를 탐색하여 폴더가 아닌 경우 라우터를 생성, 폴더인경우 재귀하여 라우터를 자동으로 등록
+// getRoutePath(publicPath, app); // publicPath의 하위 폴더를 탐색하여 폴더가 아닌 경우 라우터를 생성, 폴더인경우 재귀하여 라우터를 자동으로 등록
 
 app.use(bodyParser.urlencoded({ extended: true })); // POST요청 처리위한 body-parser 모듈 등록
 
-app.get('/game/find', (req, res) => { // 게임방 찾을때 사용되는 라우터 등록
+const register = require('../routers/register'); // 라우터 로드
+register(app); // 라우터 등록
+
+app.use((req, res, next) => {
+  req.url.toString().includes('priv') ? res.status(403).send('403 Forbidden') : next();
+})
+app.use('/', express.static(publicPath));
+
+/*app.get('/game/find', (req, res) => { // 게임방 찾을때 사용되는 라우터 등록
   console.log(req.query); // 쿼리 확인
   if (req.query.gameId != undefined) { // 쿼리에 gameId가 존재하는 경우
     console.log("exist"); // 존재한다고 출력
@@ -49,6 +61,7 @@ app.get('/game/find', (req, res) => { // 게임방 찾을때 사용되는 라우
        * @param {String} status 상태 코드와 정보를 담은 문자열
        * @param {*} game 실제로 보내야할 정보
        */
+      /*
       function sendIt(status, game) { // sendIt 함수 정의
         res.writeHead(200, { 'Content-Type': 'application/json' }); // 헤더 설정
         res.write(JSON.stringify({ status, game })); // status와 game을 JSON형식으로 변환하여 보냄
@@ -73,9 +86,9 @@ app.get('/game/find', (req, res) => { // 게임방 찾을때 사용되는 라우
       }
     });
   }
-});
+});*/
 
-app.post('/game/', (req, res) => { // 게임방 생성할때 사용되는 라우터 등록
+/*app.post('/game/', (req, res) => { // 게임방 생성할때 사용되는 라우터 등록
   let sended = 0; // 응답을 보냈는지 확인하는 변수
   console.log(path.resolve(publicPath, '../data/account.json')); // account.json의 절대경로 출력
   fs.readFile(path.resolve(publicPath, '../data/account.json'), (err, data) => { // account.json을 읽어옴
@@ -117,7 +130,7 @@ app.post('/game/', (req, res) => { // 게임방 생성할때 사용되는 라우
         // console.log(dataString);
         res.write(dataString);
         res.end();
-      });*/
+      });*//*
       fs.readFile(path.resolve(publicPath, '../public/game/main/private.html'), (err, data) => { // private.html을 읽어옴
         if (err) throw err; // 오류 발생시 오류 출력
         res.writeHead(200, { 'Content-Type': 'text/html' }); // 헤더 설정
@@ -136,10 +149,10 @@ app.post('/game/', (req, res) => { // 게임방 생성할때 사용되는 라우
         // console.log(dataString);
         res.write(dataString); // dataString을 보냄
         res.end(); // 응답 종료
-      });/**/
+      });/**//*
     }
   });
-});
+});*/
 
 app.listen(port,()=>{
   console.log(`Express app listening at http://localhost:${port}.`); // express 서버가 오류없이 실행되면 출력
@@ -147,18 +160,18 @@ app.listen(port,()=>{
 
 /**
  * 
- * @param {String} publicPath 라우터를 생성하기위해 탐색할 기본경로를 넣으십시오.
+ * @param {String} publicPath 라우터를 생성하기 위해 탐색할 기본경로를 넣으십시오.
  * @returns Nothing.
  * @description publicPath의 하위 폴더를 탐색하여 폴더가 아닌 경우 라우터를 생성, 폴더인경우 재귀하여 라우터를 자동으로 등록합니다.
  * @example getRoutePath(path.resolve(__dirname, '../public').toString());
  */
-function getRoutePath(publicPath) {
+function getRoutePath(publicPath, app) {
   fs.readdirSync(publicPath).forEach(file => { // publicPath의 하위 폴더를 탐색
     try {
       fs.readdirSync(path.resolve(publicPath, file)); // 폴더가 아닌 경우 오류 발생시켜 catch 구문 실행
       getRoutePath(path.resolve(publicPath, file)); // 폴더인 경우 재귀하여 라우터를 자동으로 등록
     } catch {
-      if (file.includes('private')) { // private가 포함된 경우
+      if (file.includes('priv')) { // priv가 포함된 경우
         return; // 라우터 생성하지 않고 종료
       }
       const routePath = path.resolve(publicPath, file).toString().split('public')[1]; // 라우터 경로 설정
