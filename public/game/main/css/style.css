@@ -23,6 +23,10 @@ input {
   vertical-align: middle;
 }
 
+.enter {
+  width: 100px;
+}
+
 .centerAlign {
   text-align: center;
 }

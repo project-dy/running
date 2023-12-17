@@ -43,40 +43,50 @@ function findGame() {
       /* {
         "gameId": "1",
         "description": "1번방입니다."
-      } 을 <div id="interectArea"></div>하위에 표를 만들어서 보여줘*/
+      } 을 <div id="interectArea"></div>하위에 표생성*/
       const table = document.getElementById('gameTable');
       table.innerHTML = '';
       const th1 = document.createElement('th');
       const th2 = document.createElement('th');
-      th1.innerHTML = '게임번호';
-      th2.innerHTML = '게임설명';
+      const th3 = document.createElement('th');
+      th1.innerHTML = '방 번호';
+      th2.innerHTML = '방 설명';
+      th3.innerHTML = '방 입장';
       th1.classList.add('leftAlign');
       th2.classList.add('leftAlign');
+      th3.classList.add('leftAlign');
+      th3.classList.add('enter');
       table.appendChild(th1);
       table.appendChild(th2);
+      table.appendChild(th3);
       console.log(res.game.length);
       for (let i = 0; i < res.game.length; i++) {
         const tr = document.createElement('tr');
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
+        const td3 = document.createElement('td');
         td1.innerHTML = res.game[i].gameId;
         td2.innerHTML = res.game[i].description;
+        td3.innerHTML = `<a href="/game/${res.game[i].gameId}">입장</a>`;
         td1.classList.add('centerAlign');
         td2.classList.add('leftAlign');
+        td3.classList.add('leftAlign');
+        td3.classList.add('enter');
         tr.appendChild(td1);
         tr.appendChild(td2);
+        tr.appendChild(td3);
         table.appendChild(tr);
       }
       // document.getElementById('interectArea').appendChild(table);
     } else if (res.status === '404 Not Found') {
       document.getElementById('info').innerHTML = `게임을 찾지 못했습니다`;
     } else {
-      document.getElementById('info').innerHTML = `알수없는 오류가 발생했습니다`;
+      document.getElementById('info').innerHTML = `알 수 없는 오류가 발생했습니다`;
       console.log(res);
     }
   }).catch((err) => {
     console.log(err);
-    document.getElementById('info').innerHTML = `알수없는 오류가 발생했습니다`;
+    document.getElementById('info').innerHTML = `알 수 없는 오류가 발생했습니다`;
   });
 }
 
