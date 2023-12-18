@@ -14,6 +14,7 @@ app.post("/", (req, res) => {
 module.exports = app; // app을 모듈로 내보냄
 
 app.post('/', (req, res) => { // 게임방 생성할때 사용되는 라우터 등록
+  return;
   let sended = 0; // 응답을 보냈는지 확인하는 변수
   console.log(path.resolve(publicPath, '../data/account.json')); // account.json의 절대경로 출력
   fs.readFile(path.resolve(publicPath, '../data/account.json'), (err, data) => { // account.json을 읽어옴

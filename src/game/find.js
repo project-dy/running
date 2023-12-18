@@ -24,7 +24,7 @@ function find(query) {
     console.log("exist"); // 존재한다고 출력
     const gameId = query.gameId; // gameId에 쿼리의 gameId를 저장
     try {
-      const data = fs.readFileSync(path.resolve(publicPath, "../data/game.json"))
+      const data = fs.readFileSync(path.resolve(publicPath, "../data/game.json")).toString();
       // game.json을 읽어옴
       const game = JSON.parse(data); // game.json을 JSON형식으로 파싱하여 game 변수에 저장
       console.log(game); // game 변수 출력
@@ -45,9 +45,9 @@ function find(query) {
     }
   } else {
     try {
-      const data = fs.readFile(path.resolve(publicPath, "../data/game.json"));
+      const data = fs.readFileSync(path.resolve(publicPath, "../data/game.json")).toString();
       // game.json을 읽어옴
-      if (err) throw err; // 오류 발생시 오류 출력
+      // if (err) throw err; // 오류 발생시 오류 출력
       const game = JSON.parse(data); // game.json을 JSON형식으로 파싱하여 game 변수에 저장
       console.log(game); // game 변수 출력
       if (game.games.length === 0) {
