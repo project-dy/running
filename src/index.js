@@ -31,7 +31,8 @@ checkRequiredFiles(dataPath); // 필수파일 존재여부 확인 및 생성
 app.use(bodyParser.urlencoded({ extended: true })); // POST요청 처리위한 body-parser 모듈 등록
 
 const register = require('../routers/register'); // 라우터 로드
-register(app); // 라우터 등록
+// register(app); // 라우터 등록
+app.use('/', register);
 
 app.use((req, res, next) => {
   req.url.toString().includes('priv') ? res.status(403).send('403 Forbidden') : next();
