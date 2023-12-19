@@ -54,3 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
     });
 });
+
+function drawInit() {
+  // 20X10의 테트리스 칸을 그린다 이때 img태그를 사용한다. id에 0-0부터 19-9까지의 id를 부여한다.
+  const tetris = document.getElementById("row");
+  for (let i = 0; i < 20; i++) {
+    for (let ii = 0; ii < 10; ii++) {
+      let img = document.createElement("img");
+      img.src = `imgs/${ii+1}.png`;
+      img.id = `${i}-${ii}`;
+      tetris.appendChild(img);
+    }
+    tetris.appendChild(document.createElement("br"));
+  }
+}
+drawInit();
