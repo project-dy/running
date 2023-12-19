@@ -32,12 +32,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // POST요청 처리위한 b
 
 const register = require('../routers/register'); // 라우터 로드
 // register(app); // 라우터 등록
-app.use('/', register);
+app.use('/', register); // 라우터 등록
 
-app.use((req, res, next) => {
-  req.url.toString().includes('priv') ? res.status(403).send('403 Forbidden') : next();
-})
-app.use('/', express.static(publicPath));
+app.use((req, res, next) => { // priv가 포함된 경로로 접속시 403 Forbidden을 출력하도록 설정
+  req.url.toString().includes('priv') ? res.status(403).send('403 Forbidden') : next(); // priv가 포함된 경로로 접속시 403 Forbidden을 출력 아닐경우 다음 미들웨어로 이동
+}); // priv가 포함된 경로로 접속시 403 Forbidden을 출력하도록 설정
+
+/*? 정적파일이란 서버에서 가지고 있는 파일을 그대로 클라이언트에게 전송하는 것임. ?*/
+app.use('/', express.static(publicPath)); // publicPath를 기본경로로 하는 정적파일 미들웨어 등록
+
 
 /*app.get('/game/find', (req, res) => { // 게임방 찾을때 사용되는 라우터 등록
   console.log(req.query); // 쿼리 확인

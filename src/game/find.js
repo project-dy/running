@@ -18,7 +18,7 @@ function find(query) {
     return [`${status.split(" ")[0]}`, JSON.stringify({ status, game })];
   }
   // 게임방 찾을때 사용되는 라우터 등록
-  console.log(query); // 쿼리 확인
+  // console.log(query); // 쿼리 확인
   if (query.gameId != undefined) {
     // 쿼리에 gameId가 존재하는 경우
     console.log("exist"); // 존재한다고 출력
@@ -49,7 +49,7 @@ function find(query) {
       // game.json을 읽어옴
       // if (err) throw err; // 오류 발생시 오류 출력
       const game = JSON.parse(data); // game.json을 JSON형식으로 파싱하여 game 변수에 저장
-      console.log(game); // game 변수 출력
+      // console.log(game); // game 변수 출력
       if (game.games.length === 0) {
         // game.games의 길이가 0인 경우
         return sendIt(`404 Not Found`, null); // 404 Not Found와 null을 보냄

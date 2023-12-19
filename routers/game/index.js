@@ -3,9 +3,9 @@ const app = require('express').Router(); // express의 Router 함수의 반환 �
 const index = require('../../src/game/index');
 
 app.post("/", (req, res) => {
-  console.log(index);
+  // console.log(index);
   const result = index(req.body);
-  console.log(result);
+  // console.log(result);
   res.writeHead(result[0]);
   res.write(result[1]);
   res.end();

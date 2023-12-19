@@ -3,9 +3,9 @@ const app = require('express').Router(); // express의 Router 함수의 반환 �
 const find = require('../../src/game/find');
 
 app.get("/", (req, res) => {
-  console.log(1);
+  // console.log(1);
   const result = find(req.query);
-  console.log(result[1]);
+  // console.log(result[1]);
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(result[1]);
   res.end();

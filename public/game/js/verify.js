@@ -3,7 +3,7 @@ const verify = () => {
   document.getElementById('sn').value = document.getElementById('sn').value.substring(0, 4);
   const input = document.getElementById('sn').value;
   const arr = [...input];
-  return 1;
+  // return 1;
   // console.log(`${arr[0]}학년 ${arr[1]}반 ${arr[2]}${arr[3]}번`);
   if (input[0] == '0' || input[1] == '0') {
     // console.log('올바른 학번을 입력해주세요.');
