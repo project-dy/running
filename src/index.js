@@ -158,9 +158,12 @@ app.use('/', express.static(publicPath)); // publicPath를 기본경로로 하�
   });
 });*/
 
-app.listen(port,()=>{
+const server = app.listen(port,()=>{
   console.log(`Express app listening at http://localhost:${port}.`); // express 서버가 오류없이 실행되면 출력
 });
+
+const webSocketServer = require('./socket/index'); // socket 모듈 로드
+webSocketServer(server); // socket 서버 실행
 
 /**
  * 

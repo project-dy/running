@@ -67,7 +67,7 @@ function findGame() {
         const td3 = document.createElement('td');
         td1.innerHTML = res.game[i].gameId;
         td2.innerHTML = res.game[i].description;
-        td3.innerHTML = `<a href="/game/${res.game[i].gameId}">입장</a>`;
+        td3.innerHTML = `<a href="/game/web?rn=${res.game[i].url}">입장</a>`;
         td1.classList.add('centerAlign');
         td2.classList.add('leftAlign');
         td3.classList.add('leftAlign');

@@ -2,6 +2,16 @@ const path = require('path'); // path 모듈 불러오기
 const publicPath = path.resolve(__dirname, '../../public').toString(); // public 폴더의 절대경로를 publicPath에 저장
 const dataPath = path.resolve(__dirname, '../../data').toString(); // data 폴더의 절대경로를 dataPath에 저장
 
+const jsfuck = require('jsfuck').JSFuck;
+
+function base64Encode(str) {
+  return Buffer.from(str).toString('base64');
+}
+
+function base64Decode(str) {
+  return Buffer.from(str, 'base64').toString();
+}
+
 const fs = require('fs'); // fs 모듈 불러오기
 
 function find(query) {
@@ -19,7 +29,7 @@ function find(query) {
   }
   // 게임방 찾을때 사용되는 라우터 등록
   // console.log(query); // 쿼리 확인
-  if (query.gameId != undefined) {
+  if (query.gameId != undefined) { // 쿼리에 gameId가 존재하는 경우
     // 쿼리에 gameId가 존재하는 경우
     console.log("exist"); // 존재한다고 출력
     const gameId = query.gameId; // gameId에 쿼리의 gameId를 저장
@@ -56,6 +66,9 @@ function find(query) {
         return; // 함수 종료
       } else {
         // game.games의 길이가 0이 아닌 경우
+        game.games.forEach((data, i) => {
+          game.games[i].url = base64Encode(jsfuck.encode(game.games[i].gameId, false, false));
+        });
         return sendIt(`205 Reset Content`, game.games); // 205 Reset Content와 game.games를 보냄
       }
     } catch (err) {
