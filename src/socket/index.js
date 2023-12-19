@@ -6,21 +6,29 @@ function webSocketServer( server ) {
   const wss = new WebSocket.Server({ server });
   
   // Store connected clients
-  const clients = {};
+  const clients = [];
   // Handle incoming connections
   wss.on('connection', (ws, req) => {
     // Get the "rn" parameter from the request URL
-    const urlParams = new URLSearchParams(req.url);
-    const rn = urlParams.get('rn');
+    // const urlParams = new URLSearchParams(req.url);
+    // const rn = urlParams.get('rn');
+    const rn = req.url.split('?rn=')[1];
+    // console.log(rn);
 
+    // get the client ip address
+    const ip = ws._socket.remoteAddress;
     // Store the WebSocket connection based on the "rn" parameter
-    clients[rn] = ws;
-    console.log(clients);
+    if (!clients[rn]) {
+      clients[rn] = [];
+    }
+    clients[rn][ip] = ws;
+    // console.log(clients);
 
     // Handle incoming messages
     ws.on('message', (message) => {
       // Handle the message from the client
       console.log(`Received message from client ${rn}: ${message}`);
+      ws.send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
     });
 
     // Handle connection close
