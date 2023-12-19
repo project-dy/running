@@ -14,7 +14,7 @@ const port = 3000;
 </body>
 </html>`));*/
 
-const path = require('path');
+const path = require('path').posix;
 const publicPath = path.resolve(__dirname, '../public').toString();
 
 // app.get('/', (req, res) => res.sendFile(`${publicPath}/index.html`));
@@ -38,5 +38,5 @@ function getRoutePath(publicPath) {
 getRoutePath(publicPath);
 
 app.listen(port,()=>{
-  console.log(`Example app listening at http://localhost:${port}.`);
+  console.log(`Express app listening at http://localhost:${port}.`);
 });
