@@ -1,3 +1,24 @@
 .imgs {
   display: none;
 }
+
+#row {
+  margin-top: 10px;
+}
+
+.roww {
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  margin-top: 0;
+  margin: 0;
+}
+
+img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  display: inline-block; /* 이미지를 인라인 블록으로 설정 */
+  background-color: transparent; /* 배경색을 투명하게 설정 */
+  border: 0px solid transparent; /* 테두리를 투명하게 설정 */
+}
