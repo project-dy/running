@@ -67,6 +67,7 @@ function find(query) {
       } else {
         // game.games의 길이가 0이 아닌 경우
         game.games.forEach((data, i) => {
+          console.log(jsfuck.encode(game.games[i].gameId, false, false));
           game.games[i].url = base64Encode(jsfuck.encode(game.games[i].gameId, false, false));
         });
         return sendIt(`205 Reset Content`, game.games); // 205 Reset Content와 game.games를 보냄
