@@ -165,7 +165,7 @@ const block = [
     [
       [0, 1],
       [1, 1],
-      [1, 0],
+      [0, 1],
     ]
   ]
 ];
@@ -248,7 +248,7 @@ function drawInit() {
     //tetris.appendChild(document.createElement("br"));
   }
   setTimeout(spawnBlock, 100);
-  setInterval(spawnBlock, 0);
+  // setInterval(spawnBlock, 0);
 }
 drawInit();
 
@@ -284,6 +284,8 @@ window.newBrick = [];
 window.newBrickInfo = [];
 
 function spawnBlock(x,y) { // random
+  window.newBrick = [];
+  window.newBrickInfo = [];
   // 블록을 생성한다.
   const blockNum = Math.floor(Math.random() * 7);
   // const blockRotation = Math.floor(Math.random() * 4);
@@ -297,7 +299,7 @@ function spawnBlock(x,y) { // random
     spawnBlockManual(blockNum, blockRotation);
   }
   // console.log(newBrick);
-  setInterval(moveBlock, 0);
+  setInterval(moveBlock, 100);
   // setInterval(spawnBlock, 1000);
 }
 
@@ -331,10 +333,12 @@ function initBlock() {
 
 window.initBlock = initBlock;
 
-function moveBlock() {
+window.newBlockInfo = [];
+/*function moveBlock() {
   // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
   // console.log(newBrick);
   // for (let i = 0; i < window.newBrick.length; i++) {
+  let did = false;
   for (let i = window.newBrick.length - 1; i >= 0; i--) {
     const id = window.newBrick[i].id.split("-");
     // console.log(id);
@@ -343,14 +347,209 @@ function moveBlock() {
     if (y == 19) {
       // console.log("stop");
       return;
+    } else if (document.getElementById(`${y+1}-${x}`).src.includes("imgs/")) {
+      // console.log("stop");
+      return;
     }
+    let isUnder;
+
+    // 블록 가로 정보 가져오기
+    const blockNum = block[window.newBrickInfo[0]];
+    const blockRotation = window.newBrickInfo[1];
+    console.log(blockNum, blockRotation);
+    console.log(window.newBrickInfo[4]);
+    let blockWidth = 0;
+    // blockWidth = blockNum[blockRotation][0].length;
+    for (let i = 0; i < blockNum[blockRotation][0].length; i++) {
+      if (blockNum[blockRotation][0][i] == 1) {
+        blockWidth = i + 1;
+      }
+    }
+    // console.log(blockWidth);
+
+    // 위치된 블록 가로 정보 가져오기
+    let bricks = [];
+    let bricksX = [];
+    let bricksY = [];
+    for (let i = 0; i < window.newBrick.length; i++) {
+      const id = window.newBrick[i].id.split("-");
+      const x = parseInt(id[1]);
+      const y = parseInt(id[0]);
+      bricksX.push(x);
+      bricksY.push(y);
+      // bricks.push([x, y]);
+    }
+    // bricksX에서 가장 작은 값 가져오기
+    let minX = Math.min(...bricksX);
+    // bricksY에서 가장 작은 값 가져오기
+    let minY = Math.min(...bricksY);
+    // bricksX에서 가장 큰 값 가져오기
+    let maxX = Math.max(...bricksX);
+    // bricksY에서 가장 큰 값 가져오기
+    let maxY = Math.max(...bricksY);
+    console.log(minX, minY, maxX, maxY);
+
+    // maxY에 +1을 해서 그 아래에 블록이 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다.
+    for (let i = minX; i <= maxX; i++) {
+      if (document.getElementById(`${maxY+1}-${i}`)?.src.includes("imgs/")) {
+        isUnder = true;
+        break;
+      }
+    }
+
+    if (isUnder) return;
+    // console.log(x, y);
+    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
+    drawBrick(0, x, y, true);
+    const brick = drawBrick(color, x, y + 1);
+    window.newBrick[i] = brick;
+    did = true;
+  }
+  console.log(did);
+  if (!did) {
+    spawnBlock();
+    return;
+  }
+  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+}*/
+
+function moveBlock() {
+  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
+  // Y좌표 별로 구별하여 리스트 생성.
+  let bricks = [];
+  for (let i = 0; i < window.newBrick.length; i++) {
+    const id = window.newBrick[i].id.split("-");
+    const x = parseInt(id[1]);
+    const y = parseInt(id[0]);
+    bricks.push([x, y]);
+  }
+  // console.log(bricks);
+  let bricksY = [];
+  for (let i = 0; i < bricks.length; i++) {
+    bricksY.push(bricks[i][1]);
+  }
+  // console.log(bricksY);
+  // y좌표를 기준으로 블록을 구분한다.
+  let bricksYList = [];
+  for (let i = 0; i < bricksY.length; i++) {
+    if (!bricksYList.includes(bricksY[i])) {
+      // bricksYList.push(bricksY[i]);
+      // bricksYList.push([bricksY[i], []]);
+      // 해당 y좌표에 있는 블록들을 리스트에 추가한다.
+      let bricksXList = [];
+      for (let ii = 0; ii < bricks.length; ii++) {
+        if (bricksY[i] == bricks[ii][1]) {
+          bricksXList.push(bricks[ii][0]);
+        }
+      }
+      // bricksYList.push([bricksY[i], bricksXList]);
+      bricksYList[bricksY[i]] = bricksXList;
+    }
+  }
+  console.log(bricksYList);
+
+  /*// 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다.
+  for (let i = 0; i < bricksYList.length; i++) {
+    const y = bricksYList[i][0];
+    const xList = bricksYList[i][1];
+    // console.log(y, xList);
+    for (let ii = 0; ii < xList.length; ii++) {
+      const x = xList[ii];
+      // console.log(x);
+      if (document.getElementById(`${y+1}-${x}`)?.src.includes("imgs/")) {
+        // console.log("stop");
+        console.log(document.getElementById(`${y+1}-${x}`));
+        return;
+      }
+    }
+  }*/
+
+  // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
+  for (let i = bricksYList.length - 1; i >= 0; i--) {
+    const y = bricksYList[i][0];
+    const xList = bricksYList[i][1];
+    console.log(y, xList);
+  }
+
+  // 블록을 한칸 아래로 이동한다.
+  for (let i = 0; i < window.newBrick.length; i++) {
+    const id = window.newBrick[i].id.split("-");
+    // console.log(id);
+    const x = parseInt(id[1]);
+    const y = parseInt(id[0]);
     // console.log(x, y);
     const color = window.newBrick[i].src.split("/")[6].split(".")[0];
     drawBrick(0, x, y, true);
     const brick = drawBrick(color, x, y + 1);
     window.newBrick[i] = brick;
   }
-  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
 }
 
 window.moveBlock = moveBlock;
+
+function moveBlockLeft() {
+  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
+  // console.log(newBrick);
+  for (let i = 0; i < window.newBrick.length; i++) {
+  // for (let i = window.newBrick.length - 1; i >= 0; i--) {
+    const id = window.newBrick[i].id.split("-");
+    // console.log(id);
+    const x = parseInt(id[1]);
+    const y = parseInt(id[0]);
+    if (x == 0) {
+      // console.log("stop");
+      return;
+    }
+    // console.log(x, y);
+    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
+    drawBrick(0, x, y, true);
+    const brick = drawBrick(color, x - 1, y);
+    window.newBrick[i] = brick;
+  }
+  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+}
+window.moveBlockLeft = moveBlockLeft;
+
+function moveBlockRight() {
+  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
+  // console.log(newBrick);
+  for (let i = window.newBrick.length - 1; i >= 0; i--) {
+    const id = window.newBrick[i].id.split("-");
+    // console.log(id);
+    const x = parseInt(id[1]);
+    const y = parseInt(id[0]);
+    if (x == 9) {
+      // console.log("stop");
+      return;
+    }
+    // console.log(x, y);
+    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
+    drawBrick(0, x, y, true);
+    const brick = drawBrick(color, x + 1, y);
+    window.newBrick[i] = brick;
+  }
+  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+}
+window.moveBlockRight = moveBlockRight;
+
+function rotateBlock() {
+  const blockNum = window.newBrickInfo[0];
+  const blockRotation = window.newBrickInfo[1];
+  const x = window.newBrickInfo[2];
+  const y = window.newBrickInfo[3];
+  const newBlockRotation = (blockRotation + 1) % 4;
+  const newBlock = block[blockNum][newBlockRotation];
+  const newBlockInfo = [blockNum, newBlockRotation, x, y];
+  const newBrick = [];
+  for (let i = y; i < newBlock.length + y; i++) { // i = y
+    for (let ii = 0; ii < newBlock[0].length; ii++) { // ii = x
+      if (newBlock[i - y][ii] == 1) {
+        const brick = drawBrick(blockNum + 1, ii + x, i);
+        newBrick.push(brick);
+      }
+    }
+  }
+  window.newBrick = newBrick;
+  window.newBrickInfo = newBlockInfo;
+}
+window.rotateBlock = rotateBlock;
