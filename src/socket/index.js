@@ -27,8 +27,12 @@ function webSocketServer( server ) {
     // Handle incoming messages
     ws.on('message', (message) => {
       // Handle the message from the client
-      console.log(`Received message from client ${rn}: ${message}`);
-      ws.send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
+      // console.log(`Received message from client ${rn}: ${message}`);
+      // ws.send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
+      // Broadcast the message to all clients
+      Object.keys(clients[rn]).forEach((client) => {
+        clients[rn][client].send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
+      });
     });
 
     // Handle connection close

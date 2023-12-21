@@ -76,7 +76,7 @@ function drawInit() {
 }
 drawInit();
 
-function drawBrick(block, x, y) {
+function drawBrick(block, x, y, force) {
   // 블록을 그린다.
   /*for (let i = 0; i < block.length; i++) {
     for (let ii = 0; ii < block[0].length; ii++) {
@@ -89,30 +89,41 @@ function drawBrick(block, x, y) {
   const row = tetris.childNodes[y];
   const img = row.childNodes[x];
   if (block == 0) {
+    if (!force) return;
     // img.removeAttribute("src");
     // img.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-    document.getElementById(`${y}-${x}`).replaceWith(document.createElement("img"));
+    // console.log(document.getElementById(`${y}-${x}`));
+    const img = document.createElement("img");
+    img.id = `${y}-${x}`;
+    document.getElementById(`${y}-${x}`).replaceWith(img);
     return;
   }
   img.src = `imgs/${block}.png`;
+  return img;
 }
 
 window.drawBrick = drawBrick;
 
-function spawnBlock() {
+window.newBrick = [];
+
+function spawnBlock() { // random
   // 블록을 생성한다.
   const blockNum = Math.floor(Math.random() * 7);
   const blockRotation = Math.floor(Math.random() * 4);
   // return [block, blockRotation];
-  console.log(blockNum, blockRotation);
-  console.log(block[blockNum][blockRotation]);
+  // console.log(blockNum, blockRotation);
+  // console.log(block[blockNum][blockRotation]);
   for (let i = 0; i < block[blockNum][blockRotation].length; i++) {
     for (let ii = 0; ii < block[blockNum][blockRotation][0].length; ii++) {
       if (block[blockNum][blockRotation][i][ii] == 1) {
-        drawBrick(blockNum + 1, ii + 3, i);
+        const brick = drawBrick(blockNum + 1, ii + 3, i);
+        newBrick.push(brick);
+      } else if (block[blockNum][blockRotation][i][ii] == 2) {
+        drawBrick(0, ii + 3, i, true);
       }
     }
   }
+  // console.log(newBrick);
 }
 
 window.spawnBlock = spawnBlock;
@@ -120,12 +131,33 @@ window.spawnBlock = spawnBlock;
 function initBlock() {
   for (let i = 0; i < 20; i++) {
     for (let ii = 0; ii < 10; ii++) {
-      drawBrick(0, ii, i);
+      const x=ii;
+      const y=i;
+      const img = document.createElement("img");
+      img.id = `${y}-${x}`;
+      document.getElementById(`${y}-${x}`).replaceWith(img);
     }
   }
 }
 
 window.initBlock = initBlock;
+
+function moveBlock() {
+  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
+  // console.log(newBrick);
+  for (let i = 0; i < window.newBrick.length; i++) {
+    const id = window.newBrick[i].id.split("-");
+    const x = parseInt(id[1]);
+    const y = parseInt(id[0]);
+    // console.log(x, y);
+    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
+    drawBrick(0, x, y);
+    const brick = drawBrick(color, x, y + 1);
+    window.newBrick[i] = brick;
+  }
+}
+
+window.moveBlock = moveBlock;
 
 /*block = [
   [ // 사각형
