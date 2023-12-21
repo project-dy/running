@@ -1,3 +1,177 @@
+
+/*block = [
+  [ // 사각형
+    [1, 1],
+    [1, 1],
+  ],
+  [ // 막대기
+    [1, 1, 1, 1],
+  ],
+  [ // ㄹ
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+  [ // 역 ㄹ
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+  [ // ㅗ
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  [ // 역 ㄱ
+    [1, 1, 1],
+    [1, 0, 0],
+  ],
+  [ // ㄱ
+    [1, 1, 1],
+    [0, 0, 1],
+  ],
+];*/
+
+const block = [
+  [ // ㄹ
+    [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+    ],
+    [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+    ]
+  ],
+  [ // 역 ㄴ
+    [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+    [
+      [1, 1],
+      [0, 1],
+      [0, 1],
+    ],
+    [
+      [1, 1, 1],
+      [1, 0, 0],
+    ],
+    [
+      [1, 0],
+      [1, 0],
+      [1, 1],
+    ],
+  ],
+  [ // 사각형
+    [
+      [1, 1],
+      [1, 1],
+    ],
+    [
+      [1, 1],
+      [1, 1],
+    ],
+    [
+      [1, 1],
+      [1, 1],
+    ],
+    [
+      [1, 1],
+      [1, 1],
+    ]
+  ],
+  [ // 역 ㄹ
+    [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [0, 1],
+    ],
+    [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [0, 1],
+    ]
+  ],
+  [ // 막대기
+    [
+      [1, 1, 1, 1],
+    ],
+    [
+      [1],
+      [1],
+      [1],
+      [1],
+    ],
+    [
+      [1, 1, 1, 1],
+    ],
+    [
+      [1],
+      [1],
+      [1],
+      [1],
+    ]
+  ],
+  [ // ㄱ
+    [
+      [1, 1, 1],
+      [0, 0, 1],
+    ],
+    [
+      [0, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    [
+      [1, 1],
+      [1, 0],
+      [1, 0],
+    ]
+  ],
+  [ // ㅗ
+    [
+      [0, 1, 0],
+      [1, 1, 1],
+    ], 
+    [
+      [1, 0],
+      [1, 1],
+      [1, 0],
+    ],
+    [
+      [1, 1, 1],
+      [0, 1, 0],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+    ]
+  ]
+];
+
+window.block = block;
+
 function init(ip){
   // URL에서 "rn" 매개변수 가져오기
   const urlParams = new URLSearchParams(window.location.search);
@@ -73,6 +247,8 @@ function drawInit() {
     tetris.appendChild(row);
     //tetris.appendChild(document.createElement("br"));
   }
+  setTimeout(spawnBlock, 100);
+  setInterval(spawnBlock, 0);
 }
 drawInit();
 
@@ -105,25 +281,38 @@ function drawBrick(block, x, y, force) {
 window.drawBrick = drawBrick;
 
 window.newBrick = [];
+window.newBrickInfo = [];
 
-function spawnBlock() { // random
+function spawnBlock(x,y) { // random
   // 블록을 생성한다.
   const blockNum = Math.floor(Math.random() * 7);
-  const blockRotation = Math.floor(Math.random() * 4);
+  // const blockRotation = Math.floor(Math.random() * 4);
+  const blockRotation = 0;
   // return [block, blockRotation];
   // console.log(blockNum, blockRotation);
   // console.log(block[blockNum][blockRotation]);
-  for (let i = 0; i < block[blockNum][blockRotation].length; i++) {
-    for (let ii = 0; ii < block[blockNum][blockRotation][0].length; ii++) {
+  if (x && y) {
+    spawnBlockManual(blockNum, blockRotation, x, y);
+  } else {
+    spawnBlockManual(blockNum, blockRotation);
+  }
+  // console.log(newBrick);
+  setInterval(moveBlock, 0);
+  // setInterval(spawnBlock, 1000);
+}
+
+function spawnBlockManual (blockNum, blockRotation, x, y) {
+  const realX = x || 3;
+  const realY = y || 0;
+  for (let i = realY; i < block[blockNum][blockRotation].length + realY; i++) { // i = y
+    for (let ii = 0; ii < block[blockNum][blockRotation][0].length; ii++) { // ii = x
       if (block[blockNum][blockRotation][i][ii] == 1) {
         const brick = drawBrick(blockNum + 1, ii + 3, i);
         newBrick.push(brick);
-      } else if (block[blockNum][blockRotation][i][ii] == 2) {
-        drawBrick(0, ii + 3, i, true);
       }
     }
   }
-  // console.log(newBrick);
+  window.newBrickInfo = [blockNum, blockRotation, realX, realY];
 }
 
 window.spawnBlock = spawnBlock;
@@ -145,197 +334,23 @@ window.initBlock = initBlock;
 function moveBlock() {
   // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
   // console.log(newBrick);
-  for (let i = 0; i < window.newBrick.length; i++) {
+  // for (let i = 0; i < window.newBrick.length; i++) {
+  for (let i = window.newBrick.length - 1; i >= 0; i--) {
     const id = window.newBrick[i].id.split("-");
+    // console.log(id);
     const x = parseInt(id[1]);
     const y = parseInt(id[0]);
+    if (y == 19) {
+      // console.log("stop");
+      return;
+    }
     // console.log(x, y);
     const color = window.newBrick[i].src.split("/")[6].split(".")[0];
-    drawBrick(0, x, y);
+    drawBrick(0, x, y, true);
     const brick = drawBrick(color, x, y + 1);
     window.newBrick[i] = brick;
   }
+  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
 }
 
 window.moveBlock = moveBlock;
-
-/*block = [
-  [ // 사각형
-    [1, 1],
-    [1, 1],
-  ],
-  [ // 막대기
-    [1, 1, 1, 1],
-  ],
-  [ // ㄹ
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  [ // 역 ㄹ
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  [ // ㅗ
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  [ // 역 ㄱ
-    [1, 1, 1],
-    [1, 0, 0],
-  ],
-  [ // ㄱ
-    [1, 1, 1],
-    [0, 0, 1],
-  ],
-];*/
-
-const block = [
-  [ // 사각형
-    [
-      [1, 1],
-      [1, 1],
-    ],
-    [
-      [1, 1],
-      [1, 1],
-    ],
-    [
-      [1, 1],
-      [1, 1],
-    ],
-    [
-      [1, 1],
-      [1, 1],
-    ]
-  ],
-  [ // 막대기
-    [
-      [1, 1, 1, 1],
-    ],
-    [
-      [1],
-      [1],
-      [1],
-      [1],
-    ],
-    [
-      [1, 1, 1, 1],
-    ],
-    [
-      [1],
-      [1],
-      [1],
-      [1],
-    ]
-  ],
-  [ // ㄹ
-    [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [1, 0],
-    ],
-    [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [1, 0],
-    ]
-  ],
-  [ // 역 ㄹ
-    [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [0, 1],
-    ],
-    [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [0, 1],
-    ]
-  ],
-  [ // ㅗ
-    [
-      [0, 1, 0],
-      [1, 1, 1],
-    ], 
-    [
-      [1, 0],
-      [1, 1],
-      [1, 0],
-    ],
-    [
-      [1, 1, 1],
-      [0, 1, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [1, 0],
-    ]
-  ],
-  [ // 역 ㄱ
-    [
-      [1, 1, 1],
-      [1, 0, 0],
-    ],
-    [
-      [1, 0],
-      [1, 0],
-      [1, 1],
-    ],
-    [
-      [0, 0, 1],
-      [1, 1, 1],
-    ],
-    [
-      [1, 1],
-      [0, 1],
-      [0, 1],
-    ],
-  ],
-  [ // ㄱ
-    [
-      [1, 1, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 1],
-      [0, 1],
-      [1, 1],
-    ],
-    [
-      [1, 0, 0],
-      [1, 1, 1],
-    ],
-    [
-      [1, 1],
-      [1, 0],
-      [1, 0],
-    ]
-  ]
-];
-
-/*let blockData;
-
-blockData.ㅁ = block[0];
-blockData.ㅣ = block[1];
-blockData.ㄹ = block[2];
-blockData.ㄹㄹ = block[3];
-blockData.ㅗ = block[4];
-blockData.ㄱ = block[5];
-blockData.ㄱㄱ = block[6];*/
