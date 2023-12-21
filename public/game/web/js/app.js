@@ -90,13 +90,42 @@ function drawBrick(block, x, y) {
   const img = row.childNodes[x];
   if (block == 0) {
     // img.removeAttribute("src");
-    img.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+    // img.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+    document.getElementById(`${y}-${x}`).replaceWith(document.createElement("img"));
     return;
   }
   img.src = `imgs/${block}.png`;
 }
 
 window.drawBrick = drawBrick;
+
+function spawnBlock() {
+  // 블록을 생성한다.
+  const blockNum = Math.floor(Math.random() * 7);
+  const blockRotation = Math.floor(Math.random() * 4);
+  // return [block, blockRotation];
+  console.log(blockNum, blockRotation);
+  console.log(block[blockNum][blockRotation]);
+  for (let i = 0; i < block[blockNum][blockRotation].length; i++) {
+    for (let ii = 0; ii < block[blockNum][blockRotation][0].length; ii++) {
+      if (block[blockNum][blockRotation][i][ii] == 1) {
+        drawBrick(blockNum + 1, ii + 3, i);
+      }
+    }
+  }
+}
+
+window.spawnBlock = spawnBlock;
+
+function initBlock() {
+  for (let i = 0; i < 20; i++) {
+    for (let ii = 0; ii < 10; ii++) {
+      drawBrick(0, ii, i);
+    }
+  }
+}
+
+window.initBlock = initBlock;
 
 /*block = [
   [ // 사각형
@@ -269,7 +298,7 @@ const block = [
   ]
 ];
 
-let blockData;
+/*let blockData;
 
 blockData.ㅁ = block[0];
 blockData.ㅣ = block[1];
@@ -277,4 +306,4 @@ blockData.ㄹ = block[2];
 blockData.ㄹㄹ = block[3];
 blockData.ㅗ = block[4];
 blockData.ㄱ = block[5];
-blockData.ㄱㄱ = block[6];
+blockData.ㄱㄱ = block[6];*/

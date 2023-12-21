@@ -35,7 +35,7 @@ const register = require('../routers/register'); // 라우터 로드
 app.use('/', register); // 라우터 등록
 
 app.use('/rs', (req,res) => {
-  res.send('https://prod.liveshare.vsengsaas.visualstudio.com/join?6129862A3A2FFD1042261C304AAC5B0E2466');
+  res.send('https://prod.liveshare.vsengsaas.visualstudio.com/join?0B287D839F627FD89D2CD0AC73F92BB4A274');
 });
 
 app.use((req, res, next) => { // priv가 포함된 경로로 접속시 403 Forbidden을 출력하도록 설정
