@@ -288,6 +288,10 @@ window.newBrick = [];
 window.newBrickInfo = [];
 
 function spawnBlock(x,y) { // random
+  try {
+    clearInterval(window.moveBlockInterval);
+  }
+  catch {}
   window.newBrick = [];
   window.newBrickInfo = [];
   // 블록을 생성한다.
@@ -303,7 +307,7 @@ function spawnBlock(x,y) { // random
     spawnBlockManual(blockNum, blockRotation);
   }
   // console.log(newBrick);
-  setInterval(moveBlock, 1000);
+  window.moveBlockInterval = setInterval(moveBlock, 100);
   // setTimeout(moveBlock, 1000);
   // setInterval(spawnBlock, 10);
 }
@@ -349,308 +353,6 @@ function initBlock() {
 }
 
 window.initBlock = initBlock;
-/*function moveBlock() {
-  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
-  // console.log(newBrick);
-  // for (let i = 0; i < window.newBrick.length; i++) {
-  let did = false;
-  for (let i = window.newBrick.length - 1; i >= 0; i--) {
-    const id = window.newBrick[i].id.split("-");
-    // console.log(id);
-    const x = parseInt(id[1]);
-    const y = parseInt(id[0]);
-    if (y == 19) {
-      // console.log("stop");
-      return;
-    } else if (document.getElementById(`${y+1}-${x}`).src.includes("imgs/")) {
-      // console.log("stop");
-      return;
-    }
-    let isUnder;
-
-    // 블록 가로 정보 가져오기
-    const blockNum = block[window.newBrickInfo[0]];
-    const blockRotation = window.newBrickInfo[1];
-    console.log(blockNum, blockRotation);
-    console.log(window.newBrickInfo[4]);
-    let blockWidth = 0;
-    // blockWidth = blockNum[blockRotation][0].length;
-    for (let i = 0; i < blockNum[blockRotation][0].length; i++) {
-      if (blockNum[blockRotation][0][i] == 1) {
-        blockWidth = i + 1;
-      }
-    }
-    // console.log(blockWidth);
-
-    // 위치된 블록 가로 정보 가져오기
-    let bricks = [];
-    let bricksX = [];
-    let bricksY = [];
-    for (let i = 0; i < window.newBrick.length; i++) {
-      const id = window.newBrick[i].id.split("-");
-      const x = parseInt(id[1]);
-      const y = parseInt(id[0]);
-      bricksX.push(x);
-      bricksY.push(y);
-      // bricks.push([x, y]);
-    }
-    // bricksX에서 가장 작은 값 가져오기
-    let minX = Math.min(...bricksX);
-    // bricksY에서 가장 작은 값 가져오기
-    let minY = Math.min(...bricksY);
-    // bricksX에서 가장 큰 값 가져오기
-    let maxX = Math.max(...bricksX);
-    // bricksY에서 가장 큰 값 가져오기
-    let maxY = Math.max(...bricksY);
-    console.log(minX, minY, maxX, maxY);
-
-    // maxY에 +1을 해서 그 아래에 블록이 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다.
-    for (let i = minX; i <= maxX; i++) {
-      if (document.getElementById(`${maxY+1}-${i}`)?.src.includes("imgs/")) {
-        isUnder = true;
-        break;
-      }
-    }
-
-    if (isUnder) return;
-    // console.log(x, y);
-    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
-    drawBrick(0, x, y, true);
-    const brick = drawBrick(color, x, y + 1);
-    window.newBrick[i] = brick;
-    did = true;
-  }
-  console.log(did);
-  if (!did) {
-    spawnBlock();
-    return;
-  }
-  // spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
-}*/
-
-/*function moveBlock() {
-  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
-  // Y좌표 별로 구별하여 리스트 생성.
-  let bricks = [];
-  for (let i = 0; i < window.newBrick.length; i++) {
-    const id = window.newBrick[i].id.split("-");
-    const x = parseInt(id[1]);
-    const y = parseInt(id[0]);
-    bricks.push([x, y]);
-  }
-  // console.log(bricks);
-  let bricksY = [];
-  for (let i = 0; i < bricks.length; i++) {
-    bricksY.push(bricks[i][1]);
-  }
-  // console.log(bricksY);
-  // y좌표를 기준으로 블록을 구분한다.
-  let bricksYList = [];
-  for (let i = 0; i < bricksY.length; i++) {
-    if (!bricksYList.includes(bricksY[i])) {
-      // bricksYList.push(bricksY[i]);
-      // bricksYList.push([bricksY[i], []]);
-      // 해당 y좌표에 있는 블록들을 리스트에 추가한다.
-      let bricksXList = [];
-      for (let ii = 0; ii < bricks.length; ii++) {
-        if (bricksY[i] == bricks[ii][1]) {
-          bricksXList.push(bricks[ii][0]);
-        }
-      }
-      // bricksYList.push([bricksY[i], bricksXList]);
-      bricksYList[bricksY[i]] = bricksXList;
-    }
-  }
-  console.log(bricksYList);
-*/
-  /*// 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다.
-  for (let i = 0; i < bricksYList.length; i++) {
-    const y = bricksYList[i][0];
-    const xList = bricksYList[i][1];
-    // console.log(y, xList);
-    for (let ii = 0; ii < xList.length; ii++) {
-      const x = xList[ii];
-      // console.log(x);
-      if (document.getElementById(`${y+1}-${x}`)?.src.includes("imgs/")) {
-        // console.log("stop");
-        console.log(document.getElementById(`${y+1}-${x}`));
-        return;
-      }
-    }
-  }*//*
-
-  // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = bricksYList[i][0];
-    const xList = bricksYList[i][1];
-    console.log(y, xList);
-  }
-
-  // 블록을 한칸 아래로 이동한다.
-  for (let i = 0; i < window.newBrick.length; i++) {
-    const id = window.newBrick[i].id.split("-");
-    // console.log(id);
-    const x = parseInt(id[1]);
-    const y = parseInt(id[0]);
-    // console.log(x, y);
-    const color = window.newBrick[i].src.split("/")[6].split(".")[0];
-    drawBrick(0, x, y, true);
-    const brick = drawBrick(color, x, y + 1);
-    window.newBrick[i] = brick;
-  }
-}*/
-
-/*function moveBlock() {
-  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
-  // Y좌표 별로 구별하여 리스트 생성.
-  let bricks = [];
-  for (let i = 0; i < window.newBrick.length; i++) {
-    const id = window.newBrick[i].id.split("-");
-    const x = parseInt(id[1]);
-    const y = parseInt(id[0]);
-    bricks.push([x, y]);
-  }
-  // console.log(bricks);
-  let bricksY = [];
-  for (let i = 0; i < bricks.length; i++) {
-    bricksY.push(bricks[i][1]);
-  }
-  // console.log(bricksY);
-  // y좌표를 기준으로 블록을 구분한다.
-  let bricksYList = [];
-  for (let i = 0; i < bricksY.length; i++) {
-    if (!bricksYList.includes(bricksY[i])) {
-      // bricksYList.push(bricksY[i]);
-      // bricksYList.push([bricksY[i], []]);
-      // 해당 y좌표에 있는 블록들을 리스트에 추가한다.
-      let bricksXList = [];
-      for (let ii = 0; ii < bricks.length; ii++) {
-        if (bricksY[i] == bricks[ii][1]) {
-          bricksXList.push(bricks[ii][0]);
-        }
-      }
-      // bricksYList.push([bricksY[i], bricksXList]);
-      bricksYList[bricksY[i]] = bricksXList;
-    }
-  }
-  // console.log(bricksYList);
-  // Y좌표가 큰 블록부터 움직인다.
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    const xList = bricksYList[i];
-    // console.log(y, xList);
-
-  }
-}*/
-
-function moveBlock() {
-  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
-  let { bricksYList, bricksListAll } = getBrickList();
-  // console.log(bricksYList, bricksListAll);
-  // Y좌표가 큰 블록부터 움직인다.
-  // console.log(bricksYList);
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    // const xList = bricksYList[i];
-    const xList = bricksYList[i];
-    if (!xList) continue;
-    // console.log(y, xList);
-    // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
-    for (let ii = 0; ii < xList.length; ii++) {
-      const x = xList[ii];
-      if (y == 19) {
-        // console.log("stop");
-        return;
-      }
-
-      // bricksYList를 이용하여 이 블록 꾸러미중 아래에 있는 블록이 있다면 return하지 않고 continue한다.
-      // console.log(bricksYList[y+1]);
-      if (bricksYList[y+1] && bricksYList[y+1].includes(x)) { // 
-        // console.log("stop");
-        // return;
-        continue;
-      } else if (!bricksYList[y+1]) {
-        // console.log("stop");
-        // return;
-        continue;
-      }
-      if (bricksListAll[y+1][x] != 0) {
-        // console.log("stop");
-        return;
-      }
-      // console.log(x);
-      //if (document.getElementById(`${y+1}-${x}`)?.src.includes("imgs/")) {
-        // console.log("stop");
-        // console.log(document.getElementById(`${y+1}-${x}`));
-        //return;
-      //}
-    }
-  }
-  // console.log(bricksYList);
-  let color;
-  // 블록을 한칸 아래로 이동한다.
-  /*for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    const xList = bricksYList[i];
-    // console.log(bricksYList);
-    console.log(y, xList);
-    if (!xList) continue;
-    // console.log(y, xList);
-    // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
-    for (let ii = 0; ii <= xList.length; ii++) {
-      const x = xList[ii];
-      // if(document.getElementById(`${y}-${x}`)?.src.split("/")[6].split(".")[0]) color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
-      if (!color) color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
-      // bricksListAll[y+1][x] = color;
-      bricksListAll[y+1][x] = -1;
-    }
-  }
-  console.log(bricksListAll);*/
-/*
-  // 이전 블록을 지운다.
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    const xList = bricksYList[i];
-    // console.log(y, xList);
-    // 블록을 지운다. 이때 이번 블록 꾸러미에서 덮어 씌여진 블록은 지우지 않는다.
-    if (!xList) continue;
-    for (let ii = 0; ii < xList.length; ii++) {
-      const x = xList[ii];
-      const color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
-      if (color == -1) continue;
-      bricksListAll[y][x] = 0;
-    }
-  }
-  // console.log(bricksListAll);
-  // -1을 color로 바꾼다.
-  /*{
-    let arrayString = JSON.stringify({a:bricksListAll});
-    console.log(color);
-    arrayString = arrayString.replaceAll('-1', color);
-    // console.log(arrayString);
-    bricksListAll = JSON.parse(arrayString).a;
-    // console.log(bricksListAll);
-  }*/
-  
-
-  // console.log(bricksListAll);
-  const result = drawBrickFromList(bricksListAll, color);
-  // console.log(result);
-  // window.newBrick = result;
-/*
-  // 한칸 아래에 새 블록을 그린다.
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    const xList = bricksYList[i];
-    // console.log(y, xList);
-    spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
-  }/**/
-  spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
-
-  // window.newBrickInfo[3] += 1;
-}
-
-window.moveBlock = moveBlock;
 
 function drawBrickFromList(bricks, orgColor) {
   let nowBrick = [];
@@ -746,6 +448,68 @@ function getBrickList() {
   }
   return { bricksYList, bricksListAll };
 }
+
+function moveBlock() {
+  // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
+  let { bricksYList, bricksListAll } = getBrickList();
+  // console.log(bricksYList, bricksListAll);
+  // Y좌표가 큰 블록부터 움직인다.
+  // console.log(bricksYList);
+
+  for (let i = bricksYList.length - 1; i >= 0; i--) { // i = y
+    const y = i;
+    // const xList = bricksYList[i];
+    const xList = bricksYList[i];
+    if (!xList) continue;
+    // console.log(y, xList);
+    // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
+    for (let ii = 0; ii < xList.length; ii++) { // ii = x
+      const x = xList[ii];
+      if (y == 19) {
+        // console.log("stop");
+        spawnBlock();
+        return;
+      }
+      
+      // 지금 체킹하는 블록
+      const thisBlock = block[newBrickInfo[0]][newBrickInfo[1]];
+      const Ylength = thisBlock.length;
+      // console.log(x, y+Ylength);
+      console.log(thisBlock[y]);
+      // console.log(thisBlock);
+      if (thisBlock[y]&&thisBlock[y][x] == 0) {
+        // console.log("stop");
+        continue;
+      }
+
+      // bricksYList를 이용하여 이 블록 꾸러미중 아래에 있는 블록이 있다면 return하지 않고 continue한다.
+      console.log(bricksYList[y+1]);
+      if (bricksYList[y+1] && bricksYList[y+1][x]) {
+        console.log(bricksYList[y+Ylength]);
+        // console.log("stop");
+        // return;
+        continue;
+      } else if (!bricksYList[y+1]) {
+        console.log("stop");
+        // return;
+        continue;
+      }
+      if (bricksListAll[y+Ylength][x] != 0) {
+        // console.log("stop");
+        spawnBlock();
+        return;
+      }
+      // console.log(x);
+    }
+  }
+  // console.log(bricksYList);
+  let color;
+
+  // drawBrickFromList(bricksListAll, color);
+  spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+}
+
+window.moveBlock = moveBlock;
 
 function moveBlockLeft() {
   // window.newbrick에 있는 블록을 한칸 아래로 이동한다.
