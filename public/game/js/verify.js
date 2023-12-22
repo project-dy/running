@@ -12,7 +12,11 @@ const verify = () => {
     // console.log('올바른 학번을 입력해주세요.');
     return '-1';
   }
-  if (arr[0] > 3 || arr[1] > 5 || arr[2] > 2 || arr[3] > 9) {
+  if (arr[0] > 3 || arr[1] > 5 || arr[2] > 3 || arr[3] == 0) {
+    // console.log('올바른 학번을 입력해주세요.');
+    // return '-1';
+  }
+  else if (arr[0] > 3 || arr[1] > 5 || arr[2] > 2 || arr[3] > 9) {
     // console.log('올바른 학번을 입력해주세요.');
     return '-1';
   }
