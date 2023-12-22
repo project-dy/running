@@ -311,10 +311,22 @@ function spawnBlock(x,y) { // random
 function spawnBlockManual (blockNum, blockRotation, x, y) {
   const realX = x || 3;
   const realY = y || 0;
-  for (let i = realY; i < block[blockNum][blockRotation].length + realY; i++) { // i = y
+
+  if (window.newBrick.length != 0) {
+    for (let i = 0; i < window.newBrick.length; i++) {
+      const id = window.newBrick[i].id.split("-");
+      const x = parseInt(id[1]);
+      const y = parseInt(id[0]);
+      drawBrick(0, x, y, true);
+    }
+  }
+
+  window.newBrick = [];
+  for (let i = 0; i < block[blockNum][blockRotation].length; i++) { // i = y
     for (let ii = 0; ii < block[blockNum][blockRotation][0].length; ii++) { // ii = x
+      // console.log(`block[${blockNum}][${blockRotation}][${i}][${ii}]`);
       if (block[blockNum][blockRotation][i][ii] == 1) {
-        const brick = drawBrick(blockNum + 1, ii + 3, i);
+        const brick = drawBrick(blockNum + 1, ii + realX, i+realY);
         newBrick.push(brick);
       }
     }
@@ -552,12 +564,12 @@ function moveBlock() {
       }
 
       // bricksYList를 이용하여 이 블록 꾸러미중 아래에 있는 블록이 있다면 return하지 않고 continue한다.
-      // console.log(bricksYList[y-1]);
-      if (bricksYList[y-1] && bricksYList[y-1].includes(x)) {
+      // console.log(bricksYList[y+1]);
+      if (bricksYList[y+1] && bricksYList[y+1].includes(x)) { // 
         // console.log("stop");
         // return;
         continue;
-      } else if (!bricksYList[y-1]) {
+      } else if (!bricksYList[y+1]) {
         // console.log("stop");
         // return;
         continue;
@@ -577,7 +589,7 @@ function moveBlock() {
   // console.log(bricksYList);
   let color;
   // 블록을 한칸 아래로 이동한다.
-  for (let i = bricksYList.length - 1; i >= 0; i--) {
+  /*for (let i = bricksYList.length - 1; i >= 0; i--) {
     const y = i;
     const xList = bricksYList[i];
     // console.log(bricksYList);
@@ -593,14 +605,8 @@ function moveBlock() {
       bricksListAll[y+1][x] = -1;
     }
   }
-  console.log(bricksListAll);
-  // 한칸 아래에 새 블록을 그린다.
-  /*for (let i = bricksYList.length - 1; i >= 0; i--) {
-    const y = i;
-    const xList = bricksYList[i];
-    // console.log(y, xList);
-    spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
-  }*/
+  console.log(bricksListAll);*/
+/*
   // 이전 블록을 지운다.
   for (let i = bricksYList.length - 1; i >= 0; i--) {
     const y = i;
@@ -630,8 +636,18 @@ function moveBlock() {
   // console.log(bricksListAll);
   const result = drawBrickFromList(bricksListAll, color);
   // console.log(result);
-  window.newBrick = result;
-  window.newBrickInfo[3] += 1;
+  // window.newBrick = result;
+/*
+  // 한칸 아래에 새 블록을 그린다.
+  for (let i = bricksYList.length - 1; i >= 0; i--) {
+    const y = i;
+    const xList = bricksYList[i];
+    // console.log(y, xList);
+    spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+  }/**/
+  spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+
+  // window.newBrickInfo[3] += 1;
 }
 
 window.moveBlock = moveBlock;
