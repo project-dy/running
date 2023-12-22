@@ -490,9 +490,15 @@ function moveBlock() {
         // return;
         continue;
       } else if (!bricksYList[y+1]) {
-        console.log("stop");
+        // console.log("stop");
         // return;
-        continue;
+        if (bricksYList[0]) {
+          console.log(bricksListAll[y+Ylength][x]);
+          continue;
+        }
+        else {
+          continue;
+        }
       }
       if (bricksListAll[y+Ylength][x] != 0) {
         // console.log("stop");
