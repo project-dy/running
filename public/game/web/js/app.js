@@ -303,9 +303,9 @@ function spawnBlock(x,y) { // random
     spawnBlockManual(blockNum, blockRotation);
   }
   // console.log(newBrick);
-  // setInterval(moveBlock, 100);
-  setTimeout(moveBlock, 1000);
-  // setInterval(spawnBlock, 1000);
+  setInterval(moveBlock, 1000);
+  // setTimeout(moveBlock, 1000);
+  // setInterval(spawnBlock, 10);
 }
 
 function spawnBlockManual (blockNum, blockRotation, x, y) {
@@ -585,9 +585,10 @@ function moveBlock() {
     if (!xList) continue;
     // console.log(y, xList);
     // 블록이 아래에 있는지 확인한다. 이때 maxX와 minX사이에 있는 블록 아래에도 있는지 확인한다. 블록이 아래에 있으면 return한다. 이때 maxY부터 확인한다. 이때 Y좌표가 같은 블록들은 가장 큰 Y좌표를 가진 블록만 확인한다.
-    for (let ii = 0; ii < xList.length; ii++) {
+    for (let ii = 0; ii <= xList.length; ii++) {
       const x = xList[ii];
-      if(document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0]) color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
+      // if(document.getElementById(`${y}-${x}`)?.src.split("/")[6].split(".")[0]) color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
+      if (!color) color = document.getElementById(`${y}-${x}`).src.split("/")[6].split(".")[0];
       // bricksListAll[y+1][x] = color;
       bricksListAll[y+1][x] = -1;
     }
