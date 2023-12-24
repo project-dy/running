@@ -419,19 +419,19 @@ function drawBrickFromList(bricks, orgColor) {
 
 window.drawBrickFromList = drawBrickFromList;
 
-function getBrickList() { // TODO: bricksYlist에서 [[empty,0],[0,0,0]]등 과 같이 출력 되어야 하지만 [empty,[0,0,0]]와 같이 출력되는 버그 수정
+/*function getBrickList() {
   // 블록 리스트를 생성한다.
   let bricks = [];
-  for (let i = 0; i < window.newBrick.length; i++) {
-    const id = window.newBrick[i].id.split("-");
-    const x = parseInt(id[1]);
-    const y = parseInt(id[0]);
+  for (let i = 0; i < window.newBrick.length; i++) { // i = brick index
+    const id = window.newBrick[i].id.split("-"); // id = 'y-x'
+    const x = parseInt(id[1]); // x = x
+    const y = parseInt(id[0]); // y = y
     bricks.push([x, y]);
   }
-  // console.log(bricks);
+  console.log(bricks);
   let bricksY = [];
   for (let i = 0; i < bricks.length; i++) {
-    bricksY.push(bricks[i][1]);
+    bricksY.push(bricks[i][0]);
   }
   // console.log(bricksY);
   // y좌표를 기준으로 블록을 구분한다.
@@ -466,6 +466,36 @@ function getBrickList() { // TODO: bricksYlist에서 [[empty,0],[0,0,0]]등 과 
     }
   }
   return { bricksYList, bricksListAll };
+}*/
+
+function getBrickList() {
+  // 전체 블록 리스트를 생성한다.
+  let bricksListAll = [];
+  for (let i = 0; i < 20; i++) {
+    bricksListAll[i] = [];
+    for (let ii = 0; ii < 10; ii++) {
+      // bricksListAll[i][ii] = 0;
+      if (document.getElementById(`${i}-${ii}`).src.includes("imgs/")) {
+        bricksListAll[i][ii] = Number(document.getElementById(`${i}-${ii}`).src.split("/")[6].split(".")[0]);
+      } else {
+        bricksListAll[i][ii] = 0;
+      }
+    }
+  }
+  // console.log(bricksListAll);
+
+  // y좌표를 기준으로 블록을 구분한다.
+  let bricksYList = [];
+  for (let i = 0; i < bricksListAll.length; i++) {
+    bricksYList.push([]);
+    for (let ii = 0; ii < bricksListAll[i].length; ii++) {
+      if (bricksListAll[i][ii] != 0) {
+        bricksYList[i].push(ii);
+      }
+    }
+  }
+  // console.log(bricksYList);
+  return { bricksYList, bricksListAll };
 }
 
 function moveBlock() {
@@ -473,28 +503,31 @@ function moveBlock() {
   let { bricksYList, bricksListAll } = getBrickList();
   // 지금 체킹하는 블록
   const thisBlock = block[newBrickInfo[0]][newBrickInfo[1]];
-  console.log(thisBlock);
+  // console.log(thisBlock);
   const Ylength = thisBlock.length;
-  console.log(Ylength);
+  // console.log(Ylength);
   const y = newBrickInfo[3]+Ylength; // 가장 아래에 있는 블록의 y좌표
-  console.log(y);
+  // console.log(y);
   const Xlength = thisBlock[0].length;
-  const xList = bricksListAll[y]; // 가장 아래에 있는 블록의 x좌표 리스트
+  const xList = bricksYList[y+1] || []; // 가장 아래에 있는 블록의 한칸 아래의 x좌표 리스트
   // const xList = bricksYList[bricksYList.length-1]; // 가장 아래에 있는 블록의 x좌표 리스트
-  console.log(bricksYList);
+  // console.log(bricksYList);
   // const x = newBrickInfo[2];
   // console.log((bricksListAll[y+1]||[undefined,undefined,undefined,undefined])[x]);
 
   if (y == 20) { // 바닥에 닿을때
     // console.log("stop");
+    debugger;
     spawnBlock();
     return;
   }
-  // console.log(xList);
+
+  console.log(xList);
   let stop = false;
-  console.log(y, newBrickInfo[3], Ylength, xList);
+  // console.log(y, newBrickInfo[3], Ylength, xList);
   console.log(bricksListAll);
-  xList.forEach((x, count)=>{
+  console.log(y, xList);
+  /*xList.forEach((x, count)=>{
     // return;
     if (x == 0) return;
     // console.log(x);
@@ -508,7 +541,31 @@ function moveBlock() {
     if (bricksListAll[y][count+1] != 0) {
       // console.log("stop");
       console.log('꾸러미 아님: ', y, count+1, bricksListAll[y], bricksListAll[y][count+1]);
+      debugger;
       stop = true;
+      return;
+    }
+  });*/
+  console.log(bricksYList);
+  xList.forEach((x, count)=>{ // TODO: 고쳐야 함 아무튼 이거 고치면 됨 진짜 고쳐야 함 안고치면 안됨 진짜 중요함 안고치면 테트리스가 안됨 진짜 중요함 진짜진짜임 거짓말 안함 진짜임 진심임 진짜라고고ㅗㅘㅓㅘㄴ미ㅗ리ㅏㅓ롸ㅣㅎ
+    // return;
+    if (x == 0) return;
+    // console.log(x);
+    if (stop == true) return;
+    if (bricksYList[y+1] == []) { // 줄이 비어있을때
+      // console.log("stop");
+      // console.log('꾸러미 아님: ', y+Ylength, x, bricksListAll);
+      stop = true;
+      return;
+    }
+    if (bricksYList[y+1] && bricksYList[y+1].includes(x)) {
+      // console.log("stop");
+      console.log('꾸러미 아님: ', y, count+1, bricksYList[y+1], bricksYList[y+1][count+1]);
+      stop = true;
+      if (!(y < Ylength+1)) {
+        spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+      }
+      debugger;
       return;
     }
   });
