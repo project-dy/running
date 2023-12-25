@@ -292,6 +292,15 @@ function spawnBlock(x,y) { // random
     clearInterval(window.moveBlockInterval);
   }
   catch {}
+  if (window.newBrick.length != 0) { // 블록이 있을때
+    if (Number(window.newBrick[0].id.split("-")[0]) < block[window.newBrickInfo[0]][window.newBrickInfo[1]].length) { // 블록소환을위한 공간이 없을때
+      clearInterval(window.moveBlockInterval);
+      debugger;
+      // alert("Game Over");
+      location.reload();
+      return;
+    }
+  }
   window.newBrick = [];
   window.newBrickInfo = [];
   // 블록을 생성한다.
@@ -314,7 +323,7 @@ function spawnBlock(x,y) { // random
   if (over) {
     clearInterval(window.moveBlockInterval);
     debugger;
-    alert("Game Over");
+    // alert("Game Over");
     location.reload();
     return;
   };
@@ -325,7 +334,7 @@ function spawnBlock(x,y) { // random
     spawnBlockManual(blockNum, blockRotation);
   }
   // console.log(newBrick);
-  window.moveBlockInterval = setInterval(moveBlock, 100);
+  window.moveBlockInterval = setInterval(moveBlock, 10);
   // setTimeout(moveBlock, 1000);
   // setInterval(spawnBlock, 10);
 }
@@ -506,10 +515,16 @@ function moveBlock() {
   // console.log(thisBlock);
   const Ylength = thisBlock.length;
   // console.log(Ylength);
-  const y = newBrickInfo[3]+Ylength; // 가장 아래에 있는 블록의 y좌표
+  // const y = newBrickInfo[3]+Ylength; // 가장 아래에 있는 블록의 y좌표
+  let y;
+  if (newBrickInfo[3] == 0) {
+    y = newBrickInfo[3]+Ylength-1;
+  } else {
+    y = newBrickInfo[3]+Ylength;
+  }
   // console.log(y);
   const Xlength = thisBlock[0].length;
-  const xList = bricksYList[y+1] || []; // 가장 아래에 있는 블록의 한칸 아래의 x좌표 리스트
+  const xList = bricksYList[y] || []; // 가장 아래에 있는 블록의 한칸 아래의 x좌표 리스트
   // const xList = bricksYList[bricksYList.length-1]; // 가장 아래에 있는 블록의 x좌표 리스트
   // console.log(bricksYList);
   // const x = newBrickInfo[2];
@@ -551,25 +566,38 @@ function moveBlock() {
     // return;
     if (x == 0) return;
     // console.log(x);
-    if (stop == true) return;
-    if (bricksYList[y+1] == []) { // 줄이 비어있을때
+    // if (stop == true) return;
+    if (bricksYList[y] == []) { // 줄이 비어있을때
       // console.log("stop");
       // console.log('꾸러미 아님: ', y+Ylength, x, bricksListAll);
-      stop = true;
+      // stop = true;
+      spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
       return;
+    }
+    if (stop == true) {
+      if (bricksYList[y].includes(x)) {
+        // console.log("stop");
+        console.log('꾸러미 아님: ', x, y, count+1, bricksYList[y+1], bricksYList[y+1][count+1]);
+        stop = true;
+        return;
+      } else {
+        stop = null;
+        return;
+      }
     }
     if (bricksYList[y+1] && bricksYList[y+1].includes(x)) {
       // console.log("stop");
-      console.log('꾸러미 아님: ', y, count+1, bricksYList[y+1], bricksYList[y+1][count+1]);
+      console.log('꾸러미 아님: ', x, y, count+1, bricksYList[y+1], bricksYList[y+1][count+1]);
       stop = true;
       if (!(y < Ylength+1)) {
-        spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3] + 1);
+        spawnBlockManual(window.newBrickInfo[0], window.newBrickInfo[1], window.newBrickInfo[2], window.newBrickInfo[3]);
+        return;
       }
-      debugger;
+      // debugger;
       return;
     }
   });
-  if (stop) { spawnBlock();return; };2
+  if (stop) { debugger;spawnBlock();return; };
   let color;
 
   // drawBrickFromList(bricksListAll, color);
