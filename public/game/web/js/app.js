@@ -577,7 +577,7 @@ function moveBlock() {
     if (stop == true) {
       if (bricksYList[y].includes(x)) {
         // console.log("stop");
-        console.log('꾸러미 아님: ', x, y, count+1, bricksYList[y+1], bricksYList[y+1][count+1]);
+        console.log('꾸러미 아님: ', x, y, count+1, bricksYList[y], bricksYList[y][count+1]);
         stop = true;
         return;
       } else {
@@ -594,7 +594,7 @@ function moveBlock() {
         return;
       }
       // debugger;
-      return;
+      // return;
     }
   });
   if (stop) { debugger;spawnBlock();return; };
