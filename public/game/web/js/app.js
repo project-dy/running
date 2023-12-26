@@ -296,7 +296,7 @@ function spawnBlock(x,y) { // random
     if (Number(window.newBrick[0].id.split("-")[0]) < block[window.newBrickInfo[0]][window.newBrickInfo[1]].length) { // 블록소환을위한 공간이 없을때
       clearInterval(window.moveBlockInterval);
       debugger;
-      // alert("Game Over");
+      alert("Game Over");
       location.reload();
       return;
     }
@@ -323,7 +323,7 @@ function spawnBlock(x,y) { // random
   if (over) {
     clearInterval(window.moveBlockInterval);
     debugger;
-    // alert("Game Over");
+    alert("Game Over");
     location.reload();
     return;
   };
@@ -514,21 +514,28 @@ function moveBlock() {
   const thisBlock = block[newBrickInfo[0]][newBrickInfo[1]];
   // console.log(thisBlock);
   const Ylength = thisBlock.length;
-  // console.log(Ylength);
-  // const y = newBrickInfo[3]+Ylength; // 가장 아래에 있는 블록의 y좌표
-  let y;
+  console.log(Ylength);
+  const y = newBrickInfo[3]+Ylength; // 가장 아래에 있는 블록의 y좌표
+  /*let y;
   if (newBrickInfo[3] == 0) {
     y = newBrickInfo[3]+Ylength-1;
   } else {
     y = newBrickInfo[3]+Ylength;
-  }
+  }*/
   // console.log(y);
   const Xlength = thisBlock[0].length;
   const xList = bricksYList[y] || []; // 가장 아래에 있는 블록의 한칸 아래의 x좌표 리스트
+  const thisxList = bricksYList[y-1] || []; // 가장 아래에 있는 블록의 x좌표 리스트
   // const xList = bricksYList[bricksYList.length-1]; // 가장 아래에 있는 블록의 x좌표 리스트
   // console.log(bricksYList);
   // const x = newBrickInfo[2];
   // console.log((bricksListAll[y+1]||[undefined,undefined,undefined,undefined])[x]);
+
+  console.log(xList);
+  let stop = false;
+  // console.log(y, newBrickInfo[3], Ylength, xList);
+  console.log(bricksListAll);
+  console.log(y, xList);
 
   if (y == 20) { // 바닥에 닿을때
     // console.log("stop");
@@ -536,12 +543,16 @@ function moveBlock() {
     spawnBlock();
     return;
   }
-
-  console.log(xList);
-  let stop = false;
-  // console.log(y, newBrickInfo[3], Ylength, xList);
-  console.log(bricksListAll);
-  console.log(y, xList);
+  // for문으로 xList를 돌면서 xList에 있는 x좌표에 있는 블록이  이 블록 꾸러미의 가장 밑에 또한 있는지 확인한다.
+  for (let i = 0; i < xList.length; i++) {
+    const x = xList[i];
+    if (thisxList.includes(x)) {
+      // console.log("stop");
+      console.log('꾸러미 아님: ', x, y, xList, thisxList);
+      stop = true;
+      break;
+    }
+  }
   /*xList.forEach((x, count)=>{
     // return;
     if (x == 0) return;
@@ -562,7 +573,7 @@ function moveBlock() {
     }
   });*/
   console.log(bricksYList);
-  xList.forEach((x, count)=>{ // TODO: 고쳐야 함 아무튼 이거 고치면 됨 진짜 고쳐야 함 안고치면 안됨 진짜 중요함 안고치면 테트리스가 안됨 진짜 중요함 진짜진짜임 거짓말 안함 진짜임 진심임 진짜라고고ㅗㅘㅓㅘㄴ미ㅗ리ㅏㅓ롸ㅣㅎ
+  /*xList.forEach((x, count)=>{ // TODO: 고쳐야 함 아무튼 이거 고치면 됨 진짜 고쳐야 함 안고치면 안됨 진짜 중요함 안고치면 테트리스가 안됨 진짜 중요함 진짜진짜임 거짓말 안함 진짜임 진심임 진짜라고고ㅗㅘㅓㅘㄴ미ㅗ리ㅏㅓ롸ㅣㅎ
     // return;
     if (x == 0) return;
     // console.log(x);
@@ -596,7 +607,7 @@ function moveBlock() {
       // debugger;
       // return;
     }
-  });
+  });*/
   if (stop) { debugger;spawnBlock();return; };
   let color;
 
