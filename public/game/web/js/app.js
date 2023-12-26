@@ -304,8 +304,8 @@ function spawnBlock(x,y) { // random
   window.newBrick = [];
   window.newBrickInfo = [];
   // 블록을 생성한다.
-  const blockNum = Math.floor(Math.random() * 7);
-  // const blockRotation = Math.floor(Math.random() * 4);
+  const blockNum = Math.floor(getRandomValue() * 7);
+  // const blockRotation = Math.floor(getRandomValue() * 4);
   const blockRotation = 0;
   // return [block, blockRotation];
   // console.log(blockNum, blockRotation);
@@ -338,6 +338,17 @@ function spawnBlock(x,y) { // random
   // setTimeout(moveBlock, 1000);
   // setInterval(spawnBlock, 10);
 }
+
+function getRandomValue() {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] / 4294967295; // Normalize to [0, 1)
+  } else {
+    return Math.random();
+  }
+}
+window.getRandomValue = getRandomValue;
 
 function spawnBlockManual (blockNum, blockRotation, x, y) {
   const realX = x || 3;
