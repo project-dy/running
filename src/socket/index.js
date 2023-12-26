@@ -1,5 +1,7 @@
 const WebSocket = require('ws');
-
+const fs = require('fs'); // fs 모듈 불러오기
+const path = require('path'); // path 모듈 불러오기
+const publicPath = path.resolve(__dirname, '../../public'); // public 폴더의 절대경로를 publicPath에 저장
 
 function webSocketServer( server ) {
   // Create a WebSocket server
@@ -30,9 +32,17 @@ function webSocketServer( server ) {
       // console.log(`Received message from client ${rn}: ${message}`);
       // ws.send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
       // Broadcast the message to all clients
-      Object.keys(clients[rn]).forEach((client) => {
-        clients[rn][client].send(`${JSON.stringify({data:[rn, ip, message.toString()]})}`);
+      const account = fs.readFileSync(path.resolve(publicPath, '../data/account.json')); // private.html을 읽어옴
+      const accountJson = JSON.parse(account);
+      let ipList = [];
+      accountJson.users.forEach((user) => {
+        ipList[user.ip] = user.name;
       });
+      if (clients[rn]) {
+        Object.keys(clients[rn]).forEach((client) => {
+          clients[rn][client].send(`${JSON.stringify({data:[rn, ipList[ip], message.toString()]})}`);
+        });
+      }
     });
 
     // Handle connection close

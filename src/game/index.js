@@ -4,22 +4,25 @@ const dataPath = path.resolve(__dirname, '../../data').toString(); // data 폴�
 
 const fs = require('fs'); // fs 모듈 불러오기
 
-function root(body) {
+function root(body, ip) {
   let sended = 0; // 응답을 보냈는지 확인하는 변수
   // console.log(path.resolve(dataPath, 'account.json')); // account.json의 절대경로 출력
   try {
     const data = fs.readFileSync(path.resolve(dataPath, 'account.json')); // account.json을 읽어옴
     const account = JSON.parse(data); // account.json을 JSON형식으로 파싱하여 account 변수에 저장
     // console.log(account.users); // account.users 출력
-    account.users.forEach((user) => { // account.users의 각각의 user에 대하여 아래 코드 실행
+    account.users.forEach((user, count) => { // account.users의 각각의 user에 대하여 아래 코드 실행
       if ((user.name === body.name || user.sn === body.sn) && sended === 0) { // user.name이 body.name과 같거나 user.sn이 body.sn과 같고 sended가 0인 경우
         // console.log("exist"); // 존재한다고 출력
+        account.users[count].ip = ip;
+        fs.writeFileSync(path.resolve(dataPath, 'account.json'), JSON.stringify(account)); // account.json에 account를 JSON형식으로 변환하여 저장
         return sendIt(`200 OK`, body); // 200 OK와 body를 보냄
         // sended = 1; // sended를 1로 설정
       }
     });
     if (sended === 0) {  // sended가 0인 경우
       account.users.push(body); // account.users에 body를 추가
+      account.users[account.users.length - 1].ip = ip;
       fs.writeFileSync(path.resolve(dataPath, 'account.json'), JSON.stringify(account)); // account.json에 account를 JSON형식으로 변환하여 저장
       // console.log("write"); // write 출력
       return sendIt(`200 OK`, body); // 200 OK와 body를 보냄

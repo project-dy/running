@@ -4,7 +4,7 @@ const index = require('../../src/game/index');
 
 app.post("/", (req, res) => {
   // console.log(index);
-  const result = index(req.body);
+  const result = index(req.body, req.ip);
   // console.log(result);
   res.writeHead(result[0]);
   res.write(result[1]);
