@@ -334,10 +334,26 @@ function spawnBlock(x,y) { // random
     spawnBlockManual(blockNum, blockRotation);
   }
   // console.log(newBrick);
-  window.moveBlockInterval = setInterval(moveBlock, 10);
+  window.moveBlockInterval = setInterval(moveBlock, 500);
   // setTimeout(moveBlock, 1000);
   // setInterval(spawnBlock, 10);
 }
+
+function eventInit() {
+  document.addEventListener("keydown", (e) => {
+    // console.log(e);
+    if (e.key == "ArrowDown") {
+      moveBlock();
+    } else if (e.key == "ArrowLeft") {
+      moveBlockLeft();
+    } else if (e.key == "ArrowRight") {
+      moveBlockRight();
+    } else if (e.key == "ArrowUp") {
+      rotateBlock();
+    }
+  });
+}
+eventInit();
 
 function getRandomValue() {
   if (window.crypto && window.crypto.getRandomValues) {
