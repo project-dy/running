@@ -12,6 +12,7 @@ function initSocket(name){
   // WebSocket 이벤트 리스너 등록
   socket.onopen = () => {
     console.log("WebSocket connection established");
+    if (window.fixSocket) window.clearInterval(window.fixSocket);
     initInterval();
   };
 
@@ -41,14 +42,19 @@ function initSocket(name){
   socket.onclose = () => {
     console.log("WebSocket connection closed");
     // 새로고침
-    setTimeout(()=>{
+    window.fixSocket = setInterval(()=>{
       // location.reload();
       initSocket(name);
-    }, 5000);
+    }, 1000);
   };
 
   socket.onerror = (error) => {
     console.error("WebSocket error:", error);
+    // 새로고침
+    window.fixSocket = setInterval(()=>{
+      // location.reload();
+      initSocket(name);
+    }, 1000);
   };
 
   window.socket = socket;
@@ -76,5 +82,5 @@ function initInterval() {
   window.syncInt = setInterval(() => {
     // 서버에 메시지 전송
     socket.send(account.score);
-  }, 100);
+  }, 500);
 }
