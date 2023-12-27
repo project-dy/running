@@ -21,6 +21,12 @@ function initSocket(name){
     try {
       data = JSON.parse(event.data).data;
       if (data[0] == rnParam) {
+        if (data[1] == name&&data[2] == "command: shutdown") {
+          console.log("shutdown");
+          // socket.close();
+          document.getRootNode().body.innerHTML = `<h1></h1>`;
+          return;
+        }
         console.log("Our room!");
         const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
         saveHighScore({score: data[2], name: data[1]}, highScores);
@@ -36,8 +42,9 @@ function initSocket(name){
     console.log("WebSocket connection closed");
     // 새로고침
     setTimeout(()=>{
-      location.reload();
-    }, 500);
+      // location.reload();
+      initSocket(name);
+    }, 5000);
   };
 
   socket.onerror = (error) => {
@@ -66,8 +73,8 @@ initSync();
 
 function initInterval() {
   // 1초마다 반복
-  setInterval(() => {
+  window.syncInt = setInterval(() => {
     // 서버에 메시지 전송
     socket.send(account.score);
-  }, 1);
+  }, 100);
 }
