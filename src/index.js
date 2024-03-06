@@ -224,4 +224,13 @@ function checkRequiredFiles(dataPath) {
     fs.writeFileSync(path.resolve(dataPath, 'game.json'), '{"games": [{"gameId": "1", "description": "Room Number 1."}]}');
     console.log('Created required file: game.json');
   }
+
+  if (files.includes('ban.json')) {
+    console.log('Found required file: ban.json');
+    // return;
+  } else {
+    // 파일 생성
+    fs.writeFileSync(path.resolve(dataPath, 'ban.json'), '{"ban": []}');
+    console.log('Created required file: ban.json');
+  }
 }
